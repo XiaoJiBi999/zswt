@@ -1,0 +1,362 @@
+[
+    {
+        "id": 1,
+        "text": "一条30米长的小路，每隔5米栽一棵树（两端都栽），共需栽多少棵树？",
+        "type": "bothEnds",
+        "length": 30,
+        "interval": 5,
+        "answer": 7
+    },
+    {
+        "id": 2,
+        "text": "一条35米长的小路，绿化队要在小路一旁栽一排树，每隔7米栽一棵树，一端靠墙。一共要栽多少棵树？",
+        "type": "oneEnd",
+        "length": 35,
+        "interval": 7,
+        "answer": 5
+    },
+    {
+        "id": 3,
+        "text": "在一条40米长的走廊两侧摆花盆，从起点到终点每隔2米摆一盆，两端都不摆。一共需要多少盆花？",
+        "type": "noEnd",
+        "length": 40,
+        "interval": 2,
+        "answer": 38
+    },
+    {
+        "id": 4,
+        "text": "一个圆形池塘的周长是60米，沿池塘周围每隔6米栽一棵柳树。一共要栽多少棵柳树？",
+        "type": "circle",
+        "length": 60,
+        "interval": 6,
+        "answer": 10
+    },
+    {
+        "id": 5,
+        "text": "一条20米长的人行道，每隔4米栽一棵樟树（两端都栽），一共要栽多少棵樟树？",
+        "type": "bothEnds",
+        "length": 20,
+        "interval": 4,
+        "answer": 6
+    },
+    {
+        "id": 6,
+        "text": "学校教学楼前的大道长80米，每隔10米放一个垃圾桶（两端都放），需要多少个垃圾桶？",
+        "type": "bothEnds",
+        "length": 80,
+        "interval": 10,
+        "answer": 9
+    },
+    {
+        "id": 7,
+        "text": "一根15米长的绳子，每隔3米系一个气球（两端都系），一共可以系多少个气球？",
+        "type": "bothEnds",
+        "length": 15,
+        "interval": 3,
+        "answer": 6
+    },
+    {
+        "id": 8,
+        "text": "一条50米长的跑道，每隔2米画一条线（两端都画），总共要画多少条线？",
+        "type": "bothEnds",
+        "length": 50,
+        "interval": 2,
+        "answer": 26
+    },
+    {
+        "id": 9,
+        "text": "一段45米长的街道，每隔9米栽一棵行道树（两端都栽），一共要栽多少棵树？",
+        "type": "bothEnds",
+        "length": 45,
+        "interval": 9,
+        "answer": 6
+    },
+    {
+        "id": 10,
+        "text": "一条60米长的绿化带，每隔6米栽一棵樱花树（两端都栽），共需多少棵树苗？",
+        "type": "bothEnds",
+        "length": 60,
+        "interval": 6,
+        "answer": 11
+    },
+    {
+        "id": 11,
+        "text": "一段27米长的篱笆，每隔3米插一根木桩（两端都插），需要多少根木桩？",
+        "type": "bothEnds",
+        "length": 27,
+        "interval": 3,
+        "answer": 10
+    },
+    {
+        "id": 12,
+        "text": "一条75米长的公路，每隔15米设置一个公交站点（两端都设），一共要设多少个站点？",
+        "type": "bothEnds",
+        "length": 75,
+        "interval": 15,
+        "answer": 6
+    },
+    {
+        "id": 13,
+        "text": "一根36米长的钢管，每隔4米切割一段（两端都保留完整段），能得到多少段钢管？",
+        "type": "bothEnds",
+        "length": 36,
+        "interval": 4,
+        "answer": 10
+    },
+    {
+        "id": 14,
+        "text": "一条100米长的铁路轨道，每隔20米放一个信号器（两端都放），需要多少个信号器？",
+        "type": "bothEnds",
+        "length": 100,
+        "interval": 20,
+        "answer": 6
+    },
+    {
+        "id": 15,
+        "text": "一段32米长的走廊，每隔8米挂一幅画（两端都挂），一共要挂多少幅画？",
+        "type": "bothEnds",
+        "length": 32,
+        "interval": 8,
+        "answer": 5
+    },
+    {
+        "id": 16,
+        "text": "一个长方形花坛的长边是28米，在长边一侧每隔4米栽一朵月季花，一端与短边对齐不栽花，另一端栽花，一共栽多少朵？",
+        "type": "oneEnd",
+        "length": 28,
+        "interval": 4,
+        "answer": 7
+    },
+    {
+        "id": 17,
+        "text": "一条63米长的公路，每隔9米安装一盏路灯，一端有电线杆不需要安装，另一端安装，共需多少盏路灯？",
+        "type": "oneEnd",
+        "length": 63,
+        "interval": 9,
+        "answer": 7
+    },
+    {
+        "id": 18,
+        "text": "小区的健身步道长40米，每隔5米放一个休息椅，一端靠近器材区不放椅子，另一端放，需要多少个休息椅？",
+        "type": "oneEnd",
+        "length": 40,
+        "interval": 5,
+        "answer": 8
+    },
+    {
+        "id": 19,
+        "text": "一段36米长的围墙，每隔6米挂一个灯笼，一端与大门重合不挂，另一端挂，一共挂多少个灯笼？",
+        "type": "oneEnd",
+        "length": 36,
+        "interval": 6,
+        "answer": 6
+    },
+    {
+        "id": 20,
+        "text": "一条56米长的河道旁，每隔8米种一棵杨树，一端靠桥不种，一共要种多少棵杨树？",
+        "type": "oneEnd",
+        "length": 56,
+        "interval": 8,
+        "answer": 7
+    },
+    {
+        "id": 21,
+        "text": "一段42米长的小路，每隔6米栽一棵树，一端靠近建筑不栽，一共要栽多少棵树？",
+        "type": "oneEnd",
+        "length": 42,
+        "interval": 6,
+        "answer": 7
+    },
+    {
+        "id": 22,
+        "text": "一条28米长的围墙边，每隔4米放一个石墩，一端不放，一共需要多少个石墩？",
+        "type": "oneEnd",
+        "length": 28,
+        "interval": 4,
+        "answer": 7
+    },
+    {
+        "id": 23,
+        "text": "一段72米长的甬路，每隔8米摆一个长椅，一端不摆，一共需要多少个长椅？",
+        "type": "oneEnd",
+        "length": 72,
+        "interval": 8,
+        "answer": 9
+    },
+    {
+        "id": 24,
+        "text": "一条48米长的步行街，每隔12米放一个垃圾桶，一端有商铺不放置，另一端放，需要多少个垃圾桶？",
+        "type": "oneEnd",
+        "length": 48,
+        "interval": 12,
+        "answer": 4
+    },
+    {
+        "id": 25,
+        "text": "一段54米长的走廊，每隔9米挂一个指示牌，一端不挂，另一端挂，一共挂多少个指示牌？",
+        "type": "oneEnd",
+        "length": 54,
+        "interval": 9,
+        "answer": 6
+    },
+    {
+        "id": 26,
+        "text": "一条18米长的走廊，单侧每隔3米摆一盆绿萝，两端都不摆，需要多少盆绿萝？",
+        "type": "noEnd",
+        "length": 18,
+        "interval": 3,
+        "answer": 5
+    },
+    {
+        "id": 27,
+        "text": "25米长的小路两侧栽冬青，每隔5米栽一棵，两端都不栽，一共栽多少棵冬青？",
+        "type": "noEnd",
+        "length": 25,
+        "interval": 5,
+        "answer": 8
+    },
+    {
+        "id": 28,
+        "text": "42米长的电缆线，每隔6米装一个固定夹，两端都不装，需要多少个固定夹？",
+        "type": "noEnd",
+        "length": 42,
+        "interval": 6,
+        "answer": 6
+    },
+    {
+        "id": 29,
+        "text": "一条33米长的过道，两侧每隔3米放一个指示牌，两端都不放，一共需要多少个指示牌？",
+        "type": "noEnd",
+        "length": 33,
+        "interval": 3,
+        "answer": 20
+    },
+    {
+        "id": 30,
+        "text": "一条50米长的走廊单侧摆花盆，每隔5米摆一盆，两端都不摆，一共需要多少盆花？",
+        "type": "noEnd",
+        "length": 50,
+        "interval": 5,
+        "answer": 9
+    },
+    {
+        "id": 31,
+        "text": "一段36米长的小路单侧栽树，每隔6米栽一棵，两端都不栽，一共要栽多少棵树？",
+        "type": "noEnd",
+        "length": 36,
+        "interval": 6,
+        "answer": 5
+    },
+    {
+        "id": 32,
+        "text": "一条24米长的通道两侧放垃圾桶，每隔3米放一个，两端都不放，一共需要多少个垃圾桶？",
+        "type": "noEnd",
+        "length": 24,
+        "interval": 3,
+        "answer": 14
+    },
+    {
+        "id": 33,
+        "text": "一段42米长的街道两侧栽树，每隔7米栽一棵，两端都不栽，一共要栽多少棵树？",
+        "type": "noEnd",
+        "length": 42,
+        "interval": 7,
+        "answer": 10
+    },
+    {
+        "id": 34,
+        "text": "一条60米长的公路单侧安装路灯，每隔10米装一盏，两端都不装，需要多少盏路灯？",
+        "type": "noEnd",
+        "length": 60,
+        "interval": 10,
+        "answer": 5
+    },
+    {
+        "id": 35,
+        "text": "一段21米长的篱笆，两侧每隔3米插一根竹竿，两端都不插，一共需要多少根竹竿？",
+        "type": "noEnd",
+        "length": 21,
+        "interval": 3,
+        "answer": 12
+    },
+    {
+        "id": 36,
+        "text": "一个圆形广场的周长是48米，沿广场边缘每隔8米摆一个雕塑，一共要摆多少个雕塑？",
+        "type": "circle",
+        "length": 48,
+        "interval": 8,
+        "answer": 6
+    },
+    {
+        "id": 37,
+        "text": "圆形花坛的周长是72米，每隔9米栽一棵桂花树，一共能栽多少棵桂花树？",
+        "type": "circle",
+        "length": 72,
+        "interval": 9,
+        "answer": 8
+    },
+    {
+        "id": 38,
+        "text": "一个圆形游泳池的周长是50米，每隔10米放一个救生圈，一共需要多少个救生圈？",
+        "type": "circle",
+        "length": 50,
+        "interval": 10,
+        "answer": 5
+    },
+    {
+        "id": 39,
+        "text": "圆形操场的周长是90米，沿跑道每隔15米画一个标记点，一共要画多少个标记点？",
+        "type": "circle",
+        "length": 90,
+        "interval": 15,
+        "answer": 6
+    },
+    {
+        "id": 40,
+        "text": "一个圆形鱼塘的周长是81米，沿鱼塘边每隔9米放一个增氧机，一共需要多少个增氧机？",
+        "type": "circle",
+        "length": 81,
+        "interval": 9,
+        "answer": 9
+    },
+    {
+        "id": 41,
+        "text": "圆形花园的周长是54米，沿花园周围每隔6米栽一棵牡丹，一共要栽多少棵牡丹？",
+        "type": "circle",
+        "length": 54,
+        "interval": 6,
+        "answer": 9
+    },
+    {
+        "id": 42,
+        "text": "一个圆形会议桌的周长是36米，每隔6米放一把椅子，一共需要多少把椅子？",
+        "type": "circle",
+        "length": 36,
+        "interval": 6,
+        "answer": 6
+    },
+    {
+        "id": 43,
+        "text": "圆形喷水池的周长是42米，每隔7米放一盆荷花，一共能放多少盆荷花？",
+        "type": "circle",
+        "length": 42,
+        "interval": 7,
+        "answer": 6
+    },
+    {
+        "id": 44,
+        "text": "一个圆形果园的周长是120米，每隔12米栽一棵苹果树，一共要栽多少棵苹果树？",
+        "type": "circle",
+        "length": 120,
+        "interval": 12,
+        "answer": 10
+    },
+    {
+        "id": 45,
+        "text": "圆形运动场的周长是108米，每隔18米站一名裁判，一共需要多少名裁判？",
+        "type": "circle",
+        "length": 108,
+        "interval": 18,
+        "answer": 6
+    }
+]
