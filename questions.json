@@ -31,8 +31,335 @@
       "correctLength": 60,
       "correctInterval": 6,
       "correctCount": 10
+    },
+    {
+      "id": 5,
+      "type": "bothEnds",
+      "question": "一条20米长的人行道，每隔4米栽一棵樟树（两端都栽），一共要栽多少棵樟树？",
+      "correctLength": 20,
+      "correctInterval": 4,
+      "correctCount": 6
+    },
+    {
+      "id": 6,
+      "type": "bothEnds",
+      "question": "学校教学楼前的大道长80米，每隔10米放一个垃圾桶（两端都放），需要多少个垃圾桶？",
+      "correctLength": 80,
+      "correctInterval": 10,
+      "correctCount": 9
+    },
+    {
+      "id": 7,
+      "type": "bothEnds",
+      "question": "一根15米长的绳子，每隔3米系一个气球（两端都系），一共可以系多少个气球？",
+      "correctLength": 15,
+      "correctInterval": 3,
+      "correctCount": 6
+    },
+    {
+      "id": 8,
+      "type": "bothEnds",
+      "question": "一条50米长的跑道，每隔2米画一条线（两端都画），总共要画多少条线？",
+      "correctLength": 50,
+      "correctInterval": 2,
+      "correctCount": 26
+    },
+    {
+      "id": 9,
+      "type": "bothEnds",
+      "question": "一段45米长的街道，每隔9米栽一棵行道树（两端都栽），一共要栽多少棵树？",
+      "correctLength": 45,
+      "correctInterval": 9,
+      "correctCount": 6
+    },
+    {
+      "id": 10,
+      "type": "bothEnds",
+      "question": "一条60米长的绿化带，每隔6米栽一棵樱花树（两端都栽），共需多少棵树苗？",
+      "correctLength": 60,
+      "correctInterval": 6,
+      "correctCount": 11
+    },
+    {
+      "id": 11,
+      "type": "bothEnds",
+      "question": "一段27米长的篱笆，每隔3米插一根木桩（两端都插），需要多少根木桩？",
+      "correctLength": 27,
+      "correctInterval": 3,
+      "correctCount": 10
+    },
+    {
+      "id": 12,
+      "type": "bothEnds",
+      "question": "一条75米长的公路，每隔15米设置一个公交站点（两端都设），一共要设多少个站点？",
+      "correctLength": 75,
+      "correctInterval": 15,
+      "correctCount": 6
+    },
+    {
+      "id": 13,
+      "type": "bothEnds",
+      "question": "一根36米长的钢管，每隔4米切割一段（两端都保留完整段），能得到多少段钢管？",
+      "correctLength": 36,
+      "correctInterval": 4,
+      "correctCount": 10
+    },
+    {
+      "id": 14,
+      "type": "bothEnds",
+      "question": "一条100米长的铁路轨道，每隔20米放一个信号器（两端都放），需要多少个信号器？",
+      "correctLength": 100,
+      "correctInterval": 20,
+      "correctCount": 6
+    },
+    {
+      "id": 15,
+      "type": "bothEnds",
+      "question": "一段32米长的走廊，每隔8米挂一幅画（两端都挂），一共要挂多少幅画？",
+      "correctLength": 32,
+      "correctInterval": 8,
+      "correctCount": 5
+    },
+    {
+      "id": 16,
+      "type": "oneEnd",
+      "question": "一个长方形花坛的长边是28米，在长边一侧每隔4米栽一朵月季花，一端与短边对齐不栽花，另一端栽花，一共栽多少朵？",
+      "correctLength": 28,
+      "correctInterval": 4,
+      "correctCount": 7
+    },
+    {
+      "id": 17,
+      "type": "oneEnd",
+      "question": "一条63米长的公路，每隔9米安装一盏路灯，一端有电线杆不需要安装，另一端安装，共需多少盏路灯？",
+      "correctLength": 63,
+      "correctInterval": 9,
+      "correctCount": 7
+    },
+    {
+      "id": 18,
+      "type": "oneEnd",
+      "question": "小区的健身步道长40米，每隔5米放一个休息椅，一端靠近器材区不放椅子，另一端放，需要多少个休息椅？",
+      "correctLength": 40,
+      "correctInterval": 5,
+      "correctCount": 8
+    },
+    {
+      "id": 19,
+      "type": "oneEnd",
+      "question": "一段36米长的围墙，每隔6米挂一个灯笼，一端与大门重合不挂，另一端挂，一共挂多少个灯笼？",
+      "correctLength": 36,
+      "correctInterval": 6,
+      "correctCount": 6
+    },
+    {
+      "id": 20,
+      "type": "oneEnd",
+      "question": "一条56米长的河道旁，每隔8米种一棵杨树，一端靠桥不种，一共要种多少棵杨树？",
+      "correctLength": 56,
+      "correctInterval": 8,
+      "correctCount": 7
+    },
+    {
+      "id": 21,
+      "type": "oneEnd",
+      "question": "一段42米长的小路，每隔6米栽一棵树，一端靠近建筑不栽，一共要栽多少棵树？",
+      "correctLength": 42,
+      "correctInterval": 6,
+      "correctCount": 7
+    },
+    {
+      "id": 22,
+      "type": "oneEnd",
+      "question": "一条28米长的围墙边，每隔4米放一个石墩，一端不放，一共需要多少个石墩？",
+      "correctLength": 28,
+      "correctInterval": 4,
+      "correctCount": 7
+    },
+    {
+      "id": 23,
+      "type": "oneEnd",
+      "question": "一段72米长的甬路，每隔8米摆一个长椅，一端不摆，一共需要多少个长椅？",
+      "correctLength": 72,
+      "correctInterval": 8,
+      "correctCount": 9
+    },
+    {
+      "id": 24,
+      "type": "oneEnd",
+      "question": "一条48米长的步行街，每隔12米放一个垃圾桶，一端有商铺不放置，另一端放，需要多少个垃圾桶？",
+      "correctLength": 48,
+      "correctInterval": 12,
+      "correctCount": 4
+    },
+    {
+      "id": 25,
+      "type": "oneEnd",
+      "question": "一段54米长的走廊，每隔9米挂一个指示牌，一端不挂，另一端挂，一共挂多少个指示牌？",
+      "correctLength": 54,
+      "correctInterval": 9,
+      "correctCount": 6
+    },
+    {
+      "id": 26,
+      "type": "noEnd",
+      "question": "一条18米长的走廊，单侧每隔3米摆一盆绿萝，两端都不摆，需要多少盆绿萝？",
+      "correctLength": 18,
+      "correctInterval": 3,
+      "correctCount": 5
+    },
+    {
+      "id": 27,
+      "type": "noEnd",
+      "question": "25米长的小路两侧栽冬青，每隔5米栽一棵，两端都不栽，一共栽多少棵冬青？",
+      "correctLength": 25,
+      "correctInterval": 5,
+      "correctCount": 8
+    },
+    {
+      "id": 28,
+      "type": "noEnd",
+      "question": "42米长的电缆线，每隔6米装一个固定夹，两端都不装，需要多少个固定夹？",
+      "correctLength": 42,
+      "correctInterval": 6,
+      "correctCount": 6
+    },
+    {
+      "id": 29,
+      "type": "noEnd",
+      "question": "一条33米长的过道，两侧每隔3米放一个指示牌，两端都不放，一共需要多少个指示牌？",
+      "correctLength": 33,
+      "correctInterval": 3,
+      "correctCount": 20
+    },
+    {
+      "id": 30,
+      "type": "noEnd",
+      "question": "一条50米长的走廊单侧摆花盆，每隔5米摆一盆，两端都不摆，一共需要多少盆花？",
+      "correctLength": 50,
+      "correctInterval": 5,
+      "correctCount": 9
+    },
+    {
+      "id": 31,
+      "type": "noEnd",
+      "question": "一段36米长的小路单侧栽树，每隔6米栽一棵，两端都不栽，一共要栽多少棵树？",
+      "correctLength": 36,
+      "correctInterval": 6,
+      "correctCount": 5
+    },
+    {
+      "id": 32,
+      "type": "noEnd",
+      "question": "一条24米长的通道两侧放垃圾桶，每隔3米放一个，两端都不放，一共需要多少个垃圾桶？",
+      "correctLength": 24,
+      "correctInterval": 3,
+      "correctCount": 14
+    },
+    {
+      "id": 33,
+      "type": "noEnd",
+      "question": "一段42米长的街道两侧栽树，每隔7米栽一棵，两端都不栽，一共要栽多少棵树？",
+      "correctLength": 42,
+      "correctInterval": 7,
+      "correctCount": 10
+    },
+    {
+      "id": 34,
+      "type": "noEnd",
+      "question": "一条60米长的公路单侧安装路灯，每隔10米装一盏，两端都不装，需要多少盏路灯？",
+      "correctLength": 60,
+      "correctInterval": 10,
+      "correctCount": 5
+    },
+    {
+      "id": 35,
+      "type": "noEnd",
+      "question": "一段21米长的篱笆，两侧每隔3米插一根竹竿，两端都不插，一共需要多少根竹竿？",
+      "correctLength": 21,
+      "correctInterval": 3,
+      "correctCount": 12
+    },
+    {
+      "id": 36,
+      "type": "circle",
+      "question": "一个圆形广场的周长是48米，沿广场边缘每隔8米摆一个雕塑，一共要摆多少个雕塑？",
+      "correctLength": 48,
+      "correctInterval": 8,
+      "correctCount": 6
+    },
+    {
+      "id": 37,
+      "type": "circle",
+      "question": "圆形花坛的周长是72米，每隔9米栽一棵桂花树，一共能栽多少棵桂花树？",
+      "correctLength": 72,
+      "correctInterval": 9,
+      "correctCount": 8
+    },
+    {
+      "id": 38,
+      "type": "circle",
+      "question": "一个圆形游泳池的周长是50米，每隔10米放一个救生圈，一共需要多少个救生圈？",
+      "correctLength": 50,
+      "correctInterval": 10,
+      "correctCount": 5
+    },
+    {
+      "id": 39,
+      "type": "circle",
+      "question": "圆形操场的周长是90米，沿跑道每隔15米画一个标记点，一共要画多少个标记点？",
+      "correctLength": 90,
+      "correctInterval": 15,
+      "correctCount": 6
+    },
+    {
+      "id": 40,
+      "type": "circle",
+      "question": "一个圆形鱼塘的周长是81米，沿鱼塘边每隔9米放一个增氧机，一共需要多少个增氧机？",
+      "correctLength": 81,
+      "correctInterval": 9,
+      "correctCount": 9
+    },
+    {
+      "id": 41,
+      "type": "circle",
+      "question": "圆形花园的周长是54米，沿花园周围每隔6米栽一棵牡丹，一共要栽多少棵牡丹？",
+      "correctLength": 54,
+      "correctInterval": 6,
+      "correctCount": 9
+    },
+    {
+      "id": 42,
+      "type": "circle",
+      "question": "一个圆形会议桌的周长是36米，每隔6米放一把椅子，一共需要多少把椅子？",
+      "correctLength": 36,
+      "correctInterval": 6,
+      "correctCount": 6
+    },
+    {
+      "id": 43,
+      "type": "circle",
+      "question": "圆形喷水池的周长是42米，每隔7米放一盆荷花，一共能放多少盆荷花？",
+      "correctLength": 42,
+      "correctInterval": 7,
+      "correctCount": 6
+    },
+    {
+      "id": 44,
+      "type": "circle",
+      "question": "一个圆形果园的周长是120米，每隔12米栽一棵苹果树，一共要栽多少棵苹果树？",
+      "correctLength": 120,
+      "correctInterval": 12,
+      "correctCount": 10
+    },
+    {
+      "id": 45,
+      "type": "circle",
+      "question": "圆形运动场的周长是108米，每隔18米站一名裁判，一共需要多少名裁判？",
+      "correctLength": 108,
+      "correctInterval": 18,
+      "correctCount": 6
     }
-    // 继续添加更多植树问题，建议达到50题左右
   ],
   "calculation": [
     {
@@ -58,6 +385,252 @@
       "question": "计算：4.6 × 7.8 + 2.2 × 4.6",
       "correctAnswer": 46,
       "hint": "提取公因式进行简便计算"
+    },
+    {
+      "id": 105,
+      "question": "计算：25 × 44",
+      "correctAnswer": 1100,
+      "hint": "将44拆分为4×11，利用25×4=100简化计算"
+    },
+    {
+      "id": 106,
+      "question": "计算：102 × 45",
+      "correctAnswer": 4590,
+      "hint": "将102拆分为100+2，使用乘法分配律"
+    },
+    {
+      "id": 107,
+      "question": "计算：3.2 × 0.25",
+      "correctAnswer": 0.8,
+      "hint": "将3.2拆分为0.8×4，利用4×0.25=1简化计算"
+    },
+    {
+      "id": 108,
+      "question": "计算：(120 - 80) × 3 + 60",
+      "correctAnswer": 180,
+      "hint": "先算括号内的减法，再算乘法，最后算加法"
+    },
+    {
+      "id": 109,
+      "question": "计算：720 ÷ 18 ÷ 4",
+      "correctAnswer": 10,
+      "hint": "利用除法的性质，将18×4=72，再用720÷72"
+    },
+    {
+      "id": 110,
+      "question": "计算：5.8 × 99 + 5.8",
+      "correctAnswer": 580,
+      "hint": "使用乘法分配律的逆运算，提取公因式5.8"
+    },
+    {
+      "id": 111,
+      "question": "计算：125 × 32 × 25",
+      "correctAnswer": 100000,
+      "hint": "将32拆分为8×4，分别与125和25相乘"
+    },
+    {
+      "id": 112,
+      "question": "计算：48 × 25 + 52 × 25",
+      "correctAnswer": 2500,
+      "hint": "使用乘法分配律的逆运算，提取公因式25"
+    },
+    {
+      "id": 113,
+      "question": "计算：15 × (40 + 8)",
+      "correctAnswer": 720,
+      "hint": "使用乘法分配律分别计算再相加"
+    },
+    {
+      "id": 114,
+      "question": "计算：7.5 × 101 - 7.5",
+      "correctAnswer": 750,
+      "hint": "提取公因式7.5，利用乘法分配律的逆运算"
+    },
+    {
+      "id": 115,
+      "question": "计算：3600 ÷ 25 ÷ 4",
+      "correctAnswer": 36,
+      "hint": "利用除法的性质，25×4=100，再计算3600÷100"
+    },
+    {
+      "id": 116,
+      "question": "计算：28 × 99",
+      "correctAnswer": 2772,
+      "hint": "将99拆分为100-1，使用乘法分配律"
+    },
+    {
+      "id": 117,
+      "question": "计算：4.2 × 6.5 + 3.5 × 4.2",
+      "correctAnswer": 42,
+      "hint": "提取公因式4.2进行简便计算"
+    },
+    {
+      "id": 118,
+      "question": "计算：125 × 808",
+      "correctAnswer": 101000,
+      "hint": "将808拆分为800+8，使用乘法分配律"
+    },
+    {
+      "id": 119,
+      "question": "计算：(36 + 64) × 25",
+      "correctAnswer": 2500,
+      "hint": "先算括号内的加法凑整，再算乘法"
+    },
+    {
+      "id": 120,
+      "question": "计算：630 ÷ (9 × 5)",
+      "correctAnswer": 14,
+      "hint": "利用除法的性质，转化为630÷9÷5"
+    },
+    {
+      "id": 121,
+      "question": "计算：56 × 125",
+      "correctAnswer": 7000,
+      "hint": "将56拆分为7×8，利用8×125=1000"
+    },
+    {
+      "id": 122,
+      "question": "计算：9.9 × 4.5",
+      "correctAnswer": 44.55,
+      "hint": "将9.9拆分为10-0.1，使用乘法分配律"
+    },
+    {
+      "id": 123,
+      "question": "计算：45 × 18 + 45 × 82",
+      "correctAnswer": 4500,
+      "hint": "提取公因式45，使用乘法分配律的逆运算"
+    },
+    {
+      "id": 124,
+      "question": "计算：800 ÷ 32",
+      "correctAnswer": 25,
+      "hint": "将32拆分为16×2，或利用800÷8÷4"
+    },
+    {
+      "id": 125,
+      "question": "计算：1.25 × 0.8 × 0.4",
+      "correctAnswer": 0.4,
+      "hint": "先算1.25×0.8凑整，再乘以0.4"
+    },
+    {
+      "id": 126,
+      "question": "计算：78 × 102 - 156",
+      "correctAnswer": 7800,
+      "hint": "156=78×2，使用乘法分配律的逆运算"
+    },
+    {
+      "id": 127,
+      "question": "计算：400 ÷ 25",
+      "correctAnswer": 16,
+      "hint": "将被除数和除数同时乘以4，转化为1600÷100"
+    },
+    {
+      "id": 128,
+      "question": "计算：3.6 × 2.5 + 6.4 × 2.5",
+      "correctAnswer": 25,
+      "hint": "提取公因式2.5，利用乘法分配律的逆运算"
+    },
+    {
+      "id": 129,
+      "question": "计算：125 × 72",
+      "correctAnswer": 9000,
+      "hint": "将72拆分为8×9，利用125×8=1000"
+    },
+    {
+      "id": 130,
+      "question": "计算：(480 + 120) ÷ (30 × 2)",
+      "correctAnswer": 10,
+      "hint": "先分别计算括号内的加法和乘法，再算除法"
+    },
+    {
+      "id": 131,
+      "question": "计算：99 × 7.2 + 7.2",
+      "correctAnswer": 720,
+      "hint": "提取公因式7.2，使用乘法分配律的逆运算"
+    },
+    {
+      "id": 132,
+      "question": "计算：25 × 16 × 125",
+      "correctAnswer": 50000,
+      "hint": "将16拆分为4×4，分别与25和125搭配"
+    },
+    {
+      "id": 133,
+      "question": "计算：63 × 99 + 63",
+      "correctAnswer": 6300,
+      "hint": "使用乘法分配律的逆运算，提取公因式63"
+    },
+    {
+      "id": 134,
+      "question": "计算：5.4 × 101",
+      "correctAnswer": 545.4,
+      "hint": "将101拆分为100+1，使用乘法分配律"
+    },
+    {
+      "id": 135,
+      "question": "计算：1800 ÷ 45 ÷ 2",
+      "correctAnswer": 20,
+      "hint": "利用除法的性质，转化为1800÷(45×2)"
+    },
+    {
+      "id": 136,
+      "question": "计算：32 × 25 × 125",
+      "correctAnswer": 100000,
+      "hint": "将32拆分为4×8，分别与25和125相乘"
+    },
+    {
+      "id": 137,
+      "question": "计算：7.8 × 99 + 7.8",
+      "correctAnswer": 780,
+      "hint": "提取公因式7.8，使用乘法分配律的逆运算"
+    },
+    {
+      "id": 138,
+      "question": "计算：44 × 25",
+      "correctAnswer": 1100,
+      "hint": "将44拆分为40+4，使用乘法分配律"
+    },
+    {
+      "id": 139,
+      "question": "计算：(720 - 360) ÷ 18",
+      "correctAnswer": 20,
+      "hint": "可以分别计算720÷18和360÷18，再相减"
+    },
+    {
+      "id": 140,
+      "question": "计算：1.25 × 32 × 0.25",
+      "correctAnswer": 10,
+      "hint": "将32拆分为8×4，分别与1.25和0.25相乘"
+    },
+    {
+      "id": 141,
+      "question": "计算：81 × 101 - 81",
+      "correctAnswer": 8100,
+      "hint": "使用乘法分配律的逆运算，提取公因式81"
+    },
+    {
+      "id": 142,
+      "question": "计算：2.5 × 4.8",
+      "correctAnswer": 12,
+      "hint": "将4.8拆分为4×1.2，利用2.5×4=10"
+    },
+    {
+      "id": 143,
+      "question": "计算：900 ÷ 25 ÷ 4",
+      "correctAnswer": 9,
+      "hint": "利用除法的性质，25×4=100，再计算900÷100"
+    },
+    {
+      "id": 144,
+      "question": "计算：45 × 201",
+      "correctAnswer": 9045,
+      "hint": "将201拆分为200+1，使用乘法分配律"
+    },
+    {
+      "id": 145,
+      "question": "计算：3.6 × 9.9 + 0.36",
+      "correctAnswer": 36,
+      "hint": "将0.36转化为3.6×0.1，再提取公因式3.6"
     }
   ],
   "problemSolving": [
@@ -84,6 +657,282 @@
       "question": "一个长方形的周长是48厘米，长是16厘米，它的宽是多少厘米？",
       "correctAnswer": 8,
       "unit": "厘米"
+    },
+    {
+      "id": 205,
+      "question": "商店运来苹果450千克，梨的重量是苹果的2倍，运来的苹果和梨一共多少千克？",
+      "correctAnswer": 1350,
+      "unit": "千克"
+    },
+    {
+      "id": 206,
+      "question": "一块长方形菜地，长25米，宽16米。如果每平方米收白菜8千克，这块地一共收白菜多少千克？",
+      "correctAnswer": 3200,
+      "unit": "千克"
+    },
+    {
+      "id": 207,
+      "question": "某工厂计划生产1200台机器，已经生产了4天，每天生产150台，剩下的要在3天内完成，平均每天生产多少台？",
+      "correctAnswer": 200,
+      "unit": "台"
+    },
+    {
+      "id": 208,
+      "question": "甲、乙两地相距480千米，一辆货车从甲地开往乙地，每小时行驶60千米，几小时能到达乙地？",
+      "correctAnswer": 8,
+      "unit": "小时"
+    },
+    {
+      "id": 209,
+      "question": "一个正方形的边长是12分米，它的周长和面积分别是多少？",
+      "correctAnswer": 48,
+      "unit": "分米"
+    },
+    {
+      "id": 210,
+      "question": "学校组织学生植树，三年级有3个班，每班植树24棵，四年级有4个班，每班植树30棵，两个年级一共植树多少棵？",
+      "correctAnswer": 192,
+      "unit": "棵"
+    },
+    {
+      "id": 211,
+      "question": "一桶油连桶重5.2千克，用去一半油后，连桶重2.7千克，原来桶里有油多少千克？",
+      "correctAnswer": 5,
+      "unit": "千克"
+    },
+    {
+      "id": 212,
+      "question": "一个长方形游泳池，长50米，宽25米。小明沿着游泳池的边跑了两圈，他一共跑了多少米？",
+      "correctAnswer": 300,
+      "unit": "米"
+    },
+    {
+      "id": 213,
+      "question": "商店里每千克苹果售价8.5元，妈妈买了3.5千克苹果，一共需要付多少元？",
+      "correctAnswer": 29.75,
+      "unit": "元"
+    },
+    {
+      "id": 214,
+      "question": "某工程队修一条公路，已经修了280千米，剩下的比已经修的多120千米，这条公路全长多少千米？",
+      "correctAnswer": 680,
+      "unit": "千米"
+    },
+    {
+      "id": 215,
+      "question": "一个三角形的面积是48平方厘米，底是12厘米，它的高是多少厘米？",
+      "correctAnswer": 8,
+      "unit": "厘米"
+    },
+    {
+      "id": 216,
+      "question": "学校买来4箱图书，每箱有25本，每本图书12元，买这些图书一共花了多少元？",
+      "correctAnswer": 1200,
+      "unit": "元"
+    },
+    {
+      "id": 217,
+      "question": "一辆汽车从甲地到乙地，每小时行驶75千米，行驶了4小时后，离乙地还有120千米，甲、乙两地相距多少千米？",
+      "correctAnswer": 420,
+      "unit": "千米"
+    },
+    {
+      "id": 218,
+      "question": "把一根长3米的钢管平均分成5段，每段长多少米？",
+      "correctAnswer": 0.6,
+      "unit": "米"
+    },
+    {
+      "id": 219,
+      "question": "某食堂原来有大米500千克，吃了3天后还剩140千克，平均每天吃多少千克大米？",
+      "correctAnswer": 120,
+      "unit": "千克"
+    },
+    {
+      "id": 220,
+      "question": "一个平行四边形的底是15厘米，高是8厘米，它的面积是多少平方厘米？",
+      "correctAnswer": 120,
+      "unit": "平方厘米"
+    },
+    {
+      "id": 221,
+      "question": "小明有零花钱86元，买文具用去23元，买课外书用去38元，还剩下多少元？",
+      "correctAnswer": 25,
+      "unit": "元"
+    },
+    {
+      "id": 222,
+      "question": "某玩具厂每天生产玩具350个，生产了12天后，正好完成了订单的一半，这个订单一共要生产多少个玩具？",
+      "correctAnswer": 8400,
+      "unit": "个"
+    },
+    {
+      "id": 223,
+      "question": "一个长方形菜地，长30米，宽18米。如果在菜地的四周围上篱笆，篱笆长多少米？",
+      "correctAnswer": 96,
+      "unit": "米"
+    },
+    {
+      "id": 224,
+      "question": "妈妈带了200元去超市购物，买食品花了89.5元，买日用品花了45.8元，还剩下多少元？",
+      "correctAnswer": 64.7,
+      "unit": "元"
+    },
+    {
+      "id": 225,
+      "question": "一辆货车每次能运货物4.5吨，要运完36吨货物，需要运多少次？",
+      "correctAnswer": 8,
+      "unit": "次"
+    },
+    {
+      "id": 226,
+      "question": "学校图书馆有故事书560本，比漫画书多180本，漫画书有多少本？",
+      "correctAnswer": 380,
+      "unit": "本"
+    },
+    {
+      "id": 227,
+      "question": "一个正方形的面积是144平方分米，它的边长是多少分米？",
+      "correctAnswer": 12,
+      "unit": "分米"
+    },
+    {
+      "id": 228,
+      "question": "某工厂要加工一批零件，每天加工120个，15天可以完成，如果每天加工150个，多少天可以完成？",
+      "correctAnswer": 12,
+      "unit": "天"
+    },
+    {
+      "id": 229,
+      "question": "甲、乙两车同时从相距360千米的两地相对开出，甲车每小时行驶65千米，乙车每小时行驶55千米，几小时后两车相遇？",
+      "correctAnswer": 3,
+      "unit": "小时"
+    },
+    {
+      "id": 230,
+      "question": "一块梯形菜地，上底是12米，下底是18米，高是10米，这块菜地的面积是多少平方米？",
+      "correctAnswer": 150,
+      "unit": "平方米"
+    },
+    {
+      "id": 231,
+      "question": "小明每分钟走65米，从家到学校需要走12分钟，小明家到学校的距离是多少米？",
+      "correctAnswer": 780,
+      "unit": "米"
+    },
+    {
+      "id": 232,
+      "question": "商店运来一批水果，其中香蕉有35箱，每箱20千克，橘子有40箱，每箱15千克，香蕉和橘子一共多少千克？",
+      "correctAnswer": 1300,
+      "unit": "千克"
+    },
+    {
+      "id": 233,
+      "question": "一个长方体水箱，长5分米，宽4分米，高3分米，这个水箱的容积是多少立方分米？",
+      "correctAnswer": 60,
+      "unit": "立方分米"
+    },
+    {
+      "id": 234,
+      "question": "某学校组织学生去春游，租了8辆大巴车，每辆大巴车可以坐45人，正好坐满，参加春游的学生有多少人？",
+      "correctAnswer": 360,
+      "unit": "人"
+    },
+    {
+      "id": 235,
+      "question": "一桶水重15千克，用去了它的2/3，用去了多少千克？",
+      "correctAnswer": 10,
+      "unit": "千克"
+    },
+    {
+      "id": 236,
+      "question": "一个圆形花坛的半径是5米，它的周长是多少米？",
+      "correctAnswer": 31.4,
+      "unit": "米"
+    },
+    {
+      "id": 237,
+      "question": "某服装店搞促销活动，一件上衣原价120元，现在打八折出售，现在售价多少元？",
+      "correctAnswer": 96,
+      "unit": "元"
+    },
+    {
+      "id": 238,
+      "question": "工厂生产一批零件，合格的有196个，不合格的有4个，这批零件的合格率是多少？",
+      "correctAnswer": 98,
+      "unit": "%"
+    },
+    {
+      "id": 239,
+      "question": "小明看一本故事书，每天看25页，看了8天后，还剩120页没看，这本书一共有多少页？",
+      "correctAnswer": 320,
+      "unit": "页"
+    },
+    {
+      "id": 240,
+      "question": "一个长方形的面积是120平方厘米，长是15厘米，它的宽是多少厘米？",
+      "correctAnswer": 8,
+      "unit": "厘米"
+    },
+    {
+      "id": 241,
+      "question": "甲仓库有粮食320吨，乙仓库的粮食比甲仓库少80吨，两个仓库一共有粮食多少吨？",
+      "correctAnswer": 560,
+      "unit": "吨"
+    },
+    {
+      "id": 242,
+      "question": "一辆汽车每行驶100千米耗油8升，行驶450千米需要耗油多少升？",
+      "correctAnswer": 36,
+      "unit": "升"
+    },
+    {
+      "id": 243,
+      "question": "学校买来一批粉笔，每个班级分15盒，正好分给24个班级，如果每个班级分18盒，可以分给多少个班级？",
+      "correctAnswer": 20,
+      "unit": "个"
+    },
+    {
+      "id": 244,
+      "question": "一个三角形的三条边分别是6厘米、8厘米、10厘米，它的周长是多少厘米？",
+      "correctAnswer": 24,
+      "unit": "厘米"
+    },
+    {
+      "id": 245,
+      "question": "某商场上半年的营业额是800万元，下半年的营业额是1000万元，下半年的营业额比上半年增长了百分之几？",
+      "correctAnswer": 25,
+      "unit": "%"
+    },
+    {
+      "id": 246,
+      "question": "把一个长18厘米、宽12厘米的长方形剪成一个最大的正方形，这个正方形的面积是多少平方厘米？",
+      "correctAnswer": 144,
+      "unit": "平方厘米"
+    },
+    {
+      "id": 247,
+      "question": "某工程队修一条水渠，每天修120米，修了15天后，还剩下全长的25%没修，这条水渠全长多少米？",
+      "correctAnswer": 2400,
+      "unit": "米"
+    },
+    {
+      "id": 248,
+      "question": "妈妈买了3千克苹果和2千克香蕉，一共花了34元，已知每千克苹果8元，每千克香蕉多少元？",
+      "correctAnswer": 5,
+      "unit": "元"
+    },
+    {
+      "id": 249,
+      "question": "一个圆形池塘的周长是62.8米，它的半径是多少米？",
+      "correctAnswer": 10,
+      "unit": "米"
+    },
+    {
+      "id": 250,
+      "question": "某学校有学生840人，其中男生人数是女生人数的1.4倍，男生和女生各有多少人？",
+      "correctAnswer": 490,
+      "unit": "人"
     }
   ]
 }
