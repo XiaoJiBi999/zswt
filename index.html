@@ -444,20 +444,44 @@
                 ];
             }
 
-            // 切换角色
-            function switchToRole(role) {
-                if (role === 'student') {
-                    document.getElementById('studentInterface').classList.remove('hidden');
-                    document.getElementById('teacherInterface').classList.add('hidden');
-                    document.getElementById('resultFeedback').classList.add('hidden');
-                } else {
-                    document.getElementById('studentInterface').classList.add('hidden');
-                    document.getElementById('teacherInterface').classList.remove('hidden');
-                    document.getElementById('resultFeedback').classList.add('hidden');
-                }
-                updateRoleBtnStyles(role);
-            }
+    // 角色切换功能
+    function switchToRole(role) {
+    // 先检查所有需要操作的元素是否存在
+        const studentInterface = document.getElementById('studentInterface');
+        const teacherInterface = document.getElementById('teacherInterface');
+        const teacherLogin = document.getElementById('teacherLogin');
+    
+    // 确保所有元素都存在再进行操作
+        if (!studentInterface || !teacherInterface || !teacherLogin) {
+            console.error('角色切换所需的界面元素未找到');
+            return;
+        }
 
+        if (role === 'student') {
+            studentInterface.classList.remove('hidden');
+            teacherInterface.classList.add('hidden');
+            teacherLogin.classList.add('hidden');
+        } else {
+            studentInterface.classList.add('hidden');
+            teacherInterface.classList.add('hidden');
+            teacherLogin.classList.remove('hidden');
+            // 清除密码和错误提示
+            const passwordInput = document.getElementById('teacherPassword');
+            const loginError = document.getElementById('loginError');
+            if (passwordInput) passwordInput.value = '';
+            if (loginError) loginError.classList.add('hidden');
+        }
+        updateRoleBtnStyles(role);
+    }
+
+// 修复角色按钮的事件监听
+    document.getElementById('studentBtn').addEventListener('click', () => {
+        switchToRole('student');
+    });
+
+    document.getElementById('teacherBtn').addEventListener('click', () => {
+        switchToRole('teacher');
+    });
             // 更新角色按钮样式
             function updateRoleBtnStyles(activeRole) {
                 if (activeRole === 'student') {
