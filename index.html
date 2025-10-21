@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>植树问题练习工具</title>
+    <title>植树问题交互式教学工具</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- 配置Tailwind自定义颜色和字体 -->
     <script>
         tailwind.config = {
             theme: {
@@ -13,9 +15,10 @@
                     colors: {
                         primary: '#3B82F6',
                         secondary: '#10B981',
-                        accent: '#F59E0B',
+                        accent: '#8B5CF6',
                         neutral: '#64748B',
                         light: '#F1F5F9',
+                        dark: '#1E293B'
                     },
                     fontFamily: {
                         sans: ['Inter', 'system-ui', 'sans-serif'],
@@ -24,621 +27,430 @@
             }
         }
     </script>
+    
     <style type="text/tailwindcss">
         @layer utilities {
             .content-auto {
                 content-visibility: auto;
             }
+            .card-shadow {
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            }
             .btn-hover {
-                @apply hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200;
+                @apply transition-all duration-300 hover:shadow-lg transform hover:-translate-y-0.5;
             }
             .page-transition {
-                @apply transition-opacity duration-300;
+                @apply transition-opacity duration-500;
+            }
+            .input-error {
+                @apply border-red-500 focus:ring-red-500 focus:border-red-500;
             }
         }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen font-sans">
-    <div class="container mx-auto px-4 py-8 max-w-5xl">
+<body class="bg-gradient-to-br from-light to-blue-50 font-sans min-h-screen overflow-x-hidden">
+    <!-- 全屏切换按钮 -->
+    <button id="fullscreenBtn" class="fixed top-4 right-4 z-50 bg-dark/80 text-white p-2 rounded-full hover:bg-dark transition-colors">
+        <i class="fa fa-expand"></i>
+    </button>
+
+    <!-- 页面容器 -->
+    <div class="container mx-auto px-4 py-6 max-w-5xl">
         <!-- 页面标题 -->
-        <header class="text-center mb-10">
-            <h1 class="text-[clamp(1.8rem,5vw,3rem)] font-bold text-gray-800 mb-2">植树问题练习工具</h1>
-            <p class="text-neutral">通过互动练习掌握不同类型的植树问题解法</p>
-        </header>
+        <h1 class="text-[clamp(2rem,5vw,3rem)] font-bold text-center text-dark mb-8 py-4 bg-white/70 rounded-xl shadow-md">
+            植树问题交互式教学工具
+        </h1>
 
         <!-- 角色切换 -->
-        <div class="flex justify-center mb-8">
-            <button id="studentBtn" class="px-6 py-3 bg-primary text-white rounded-l-lg btn-hover">
-                <i class="fa fa-user-circle mr-2"></i>学生模式
-            </button>
-            <button id="teacherBtn" class="px-6 py-3 bg-white text-dark rounded-r-lg btn-hover">
-                <i class="fa fa-teacher mr-2"></i>教师模式
-            </button>
+        <div class="text-center mb-8">
+            <button id="studentBtn" class="px-6 py-3 bg-primary text-white rounded-lg btn-hover active">学生端</button>
+            <button id="teacherBtn" class="px-6 py-3 bg-white text-dark rounded-lg btn-hover ml-4">教师端</button>
         </div>
 
-        <!-- 全屏按钮 -->
-        <div class="absolute right-4 top-4">
-            <button id="fullscreenBtn" class="p-2 bg-light rounded-full text-neutral btn-hover">
-                <i class="fa fa-expand"></i>
-            </button>
-        </div>
-
-        <!-- 学生首页 -->
-        <div id="studentHome" class="page-transition">
-            <div class="bg-white rounded-2xl shadow-lg p-8 max-w-md mx-auto">
-                <h2 class="text-2xl font-bold text-center mb-6 text-gray-800">准备开始练习</h2>
-                
-                <div class="mb-6">
-                    <label class="block text-neutral mb-2 text-left">姓名：</label>
-                    <input type="text" id="studentName" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all" placeholder="例如：张三">
-                </div>
-                
-                <div class="mb-6">
-                    <label class="block text-neutral mb-2 text-left">班级：</label>
-                    <select id="studentClass" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all">
-                        <option value="" selected disabled>请选择班级</option>
-                        <option value="五年1班">五年1班</option>
-                        <option value="五年2班">五年2班</option>
-                        <option value="五年3班">五年3班</option>
-                        <option value="五年4班">五年4班</option>
-                    </select>
-                </div>
-            </div>
-            
-            <button id="startBtn" class="mt-8 px-8 py-4 bg-secondary text-white rounded-lg btn-hover text-lg block mx-auto">
-                开始答题 <i class="fa fa-arrow-right ml-2"></i>
-            </button>
-        </div>
-
-        <!-- 教师界面 -->
-        <div id="teacherInterface" class="hidden page-transition bg-white rounded-2xl shadow-lg p-6">
-            <h2 class="text-2xl font-bold mb-6 text-gray-800">教师分析面板</h2>
-            
+        <!-- 教师密码验证（初始隐藏） -->
+        <div id="teacherLogin" class="bg-white rounded-xl p-8 card-shadow hidden page-transition">
+            <h2 class="text-2xl font-bold text-dark mb-6 text-center">教师端登录</h2>
             <div class="mb-6">
-                <label class="block text-neutral mb-2">教师密码：</label>
-                <div class="flex gap-3">
-                    <input type="password" id="teacherPassword" class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all" placeholder="输入密码查看数据">
-                    <button id="teacherLoginBtn" class="px-6 py-3 bg-primary text-white rounded-lg btn-hover">
-                        登录
-                    </button>
-                </div>
+                <label class="block text-neutral mb-2 text-lg">请输入密码：</label>
+                <input type="password" id="teacherPassword" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all text-lg">
             </div>
-            
-            <div id="teacherDashboard" class="hidden">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                    <div class="p-5 border rounded-xl bg-green-50 border-green-100 transform transition-all hover:scale-105">
-                        <div class="text-sm text-green-600">参与人数</div>
-                        <div class="text-3xl font-bold text-green-700 mt-2" id="totalStudents">0</div>
-                    </div>
-                    <div class="p-5 border rounded-xl bg-green-50 border-green-100 transform transition-all hover:scale-105">
-                        <div class="text-sm text-green-600">全对人数</div>
-                        <div class="text-3xl font-bold text-green-700 mt-2" id="fullCorrectStudents">0</div>
-                    </div>
-                    <div class="p-5 border rounded-xl bg-yellow-50 border-yellow-100 transform transition-all hover:scale-105">
-                        <div class="text-sm text-yellow-600">平均正确率</div>
-                        <div class="text-3xl font-bold text-yellow-700 mt-2" id="averageAccuracy">0%</div>
-                    </div>
-                    <div class="p-5 border rounded-xl bg-purple-50 border-purple-100 transform transition-all hover:scale-105">
-                        <div class="text-sm text-purple-600">总答题次数</div>
-                        <div class="text-3xl font-bold text-purple-700 mt-2" id="totalAttempts">0</div>
-                    </div>
-                </div>
+            <div class="flex justify-between gap-4">
+                <button id="loginBtn" class="flex-1 px-6 py-3 bg-primary text-white rounded-lg btn-hover text-lg">登录</button>
+                <button id="teacherExitLoginBtn" class="flex-1 px-6 py-3 bg-gray-200 text-dark rounded-lg btn-hover text-lg">退出</button>
+            </div>
+            <p id="loginError" class="text-red-500 text-center mt-4 hidden">密码错误，请重试</p>
+        </div>
 
-                <!-- 热力图区域 -->
-                <div class="mb-10">
-                    <h3 class="text-xl font-semibold text-dark mb-5 flex items-center">
-                        <i class="fa fa-fire mr-2 text-orange-500"></i>各类型题目正确率热力图
-                    </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div class="p-5 rounded-xl text-center" id="heatBothEnds">
-                            <div class="font-bold mb-3">两端都栽</div>
-                            <div class="text-3xl" id="rateBothEnds">0%</div>
-                        </div>
-                        <div class="p-5 rounded-xl text-center" id="heatOneEnd">
-                            <div class="font-bold mb-3">一端栽一端不栽</div>
-                            <div class="text-3xl" id="rateOneEnd">0%</div>
-                        </div>
-                        <div class="p-5 rounded-xl text-center" id="heatNoEnd">
-                            <div class="font-bold mb-3">两端都不栽</div>
-                            <div class="text-3xl" id="rateNoEnd">0%</div>
-                        </div>
-                        <div class="p-5 rounded-xl text-center" id="heatCircle">
-                            <div class="font-bold mb-3">封闭环形曲线</div>
-                            <div class="text-3xl" id="rateCircle">0%</div>
-                        </div>
+        <!-- 学生端界面 -->
+        <div id="studentInterface" class="bg-white rounded-xl p-6 md:p-8 card-shadow page-transition">
+            <!-- 首页 - 学生信息 -->
+            <div id="studentHome" class="text-center py-6">
+                <div class="max-w-md mx-auto bg-light rounded-lg p-6 mb-8">
+                    <h2 class="text-xl font-semibold text-dark mb-6">请输入你的信息</h2>
+                    
+                    <div class="mb-6">
+                        <label class="block text-neutral mb-2 text-left">姓名：</label>
+                        <input type="text" id="studentName" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all" placeholder="例如：张三">
                     </div>
-                </div>
-
-                <!-- 班级错题统计 -->
-                <div class="mb-10">
-                    <h3 class="text-xl font-semibold text-dark mb-5 flex items-center">
-                        <i class="fa fa-bar-chart mr-2 text-primary"></i>班级错题分布
-                    </h3>
-                    <div class="overflow-x-auto bg-light/30 rounded-xl p-1">
-                        <table class="min-w-full">
-                            <thead>
-                                <tr class="bg-white">
-                                    <th class="px-6 py-4 border-b text-left">班级</th>
-                                    <th class="px-6 py-4 border-b text-left">总人数</th>
-                                    <th class="px-6 py-4 border-b text-left">全对人数</th>
-                                    <th class="px-6 py-4 border-b text-left">错误率最高类型</th>
-                                </tr>
-                            </thead>
-                            <tbody id="classErrorStats">
-                                <tr>
-                                    <td colspan="4" class="px-6 py-4 border-b text-center">暂无数据</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- 错题分析报告 -->
-                <div>
-                    <h3 class="text-xl font-semibold text-dark mb-5 flex items-center">
-                        <i class="fa fa-file-text mr-2 text-accent"></i>错题分析报告
-                    </h3>
-                    <div id="errorReport" class="border border-gray-200 rounded-xl p-5 bg-light/30">
-                        <p class="mb-3">1. 各类型题目错误率统计：</p>
-                        <ul id="errorRateList" class="list-disc ml-6 mb-6 space-y-1">
-                            <li>两端都栽：0%（0/0人错误）</li>
-                            <li>一端栽一端不栽：0%（0/0人错误）</li>
-                            <li>两端都不栽：0%（0/0人错误）</li>
-                            <li>封闭环形曲线：0%（0/0人错误）</li>
-                        </ul>
-                        <p class="mb-3">2. 主要错误原因：暂无数据</p>
-                        <p class="mb-3">3. 教学建议：暂无数据</p>
-                        <p class="text-sm text-neutral">数据更新时间：--</p>
+                    
+                    <div class="mb-6">
+                        <label class="block text-neutral mb-2 text-left">班级：</label>
+                        <select id="studentClass" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all">
+                            <option value="" selected disabled>请选择班级</option>
+                            <option value="五年1班">五年1班</option>
+                            <option value="五年2班">五年2班</option>
+                            <option value="五年3班">五年3班</option>
+                            <option value="五年4班">五年4班</option>
+                        </select>
                     </div>
                 </div>
                 
-                <div class="mt-8 text-center">
-                    <button id="exportAnalysisBtn" class="px-6 py-3 bg-accent text-white rounded-lg btn-hover">
-                        <i class="fa fa-download mr-2"></i>导出分析报告
-                    </button>
+                <button id="startBtn" class="px-8 py-4 bg-secondary text-white rounded-lg btn-hover text-lg">
+                    开始答题 <i class="fa fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+
+            <!-- 题目页面（初始隐藏） -->
+            <div id="questionPages" class="hidden page-transition">
+                <!-- 题目导航 -->
+                <div class="flex justify-center mb-8 flex-wrap gap-3">
+                    <button class="question-nav-btn px-5 py-3 border-2 rounded-lg text-dark" data-question="1">第1题</button>
+                    <button class="question-nav-btn px-5 py-3 border-2 rounded-lg text-dark" data-question="2">第2题</button>
+                    <button class="question-nav-btn px-5 py-3 border-2 rounded-lg text-dark" data-question="3">第3题</button>
+                    <button class="question-nav-btn px-5 py-3 border-2 rounded-lg text-dark" data-question="4">第4题</button>
+                </div>
+
+                <!-- 题目内容区域 -->
+                <div id="questionContent">
+                    <!-- 题目1 -->
+                    <div class="question-page" data-question="1">
+                        <div class="bg-light p-5 rounded-lg mb-6 border-l-4 border-primary">
+                            <p class="text-lg md:text-xl">第一题：小明家门前有一条20m长的小路，绿化队要在小路一旁栽一排树，每隔4m栽一棵树（两端都栽）。一共要栽多少棵树？</p>
+                        </div>
+                        <div class="question-form" data-correct-length="20" data-correct-interval="4" data-correct-type="bothEnds" data-correct-count="6"></div>
+                        
+                        <!-- 下一题按钮（第1题显示） -->
+                        <div class="mt-10 text-center">
+                            <button class="next-question-btn px-8 py-4 bg-primary text-white rounded-lg btn-hover text-lg" data-next="2">
+                                下一题 <i class="fa fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 题目2 -->
+                    <div class="question-page hidden" data-question="2">
+                        <div class="bg-light p-5 rounded-lg mb-6 border-l-4 border-primary">
+                            <p class="text-lg md:text-xl">第二题：小明家门前有一条35m长的小路，绿化队要在小路一旁栽一排树，每隔7m栽一棵树，一端靠墙。一共要栽多少棵树？</p>
+                        </div>
+                        <div class="question-form" data-correct-length="35" data-correct-interval="7" data-correct-type="oneEnd" data-correct-count="5"></div>
+                        
+                        <!-- 下一题按钮（第2题显示） -->
+                        <div class="mt-10 text-center">
+                            <button class="next-question-btn px-8 py-4 bg-primary text-white rounded-lg btn-hover text-lg" data-next="3">
+                                下一题 <i class="fa fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 题目3 -->
+                    <div class="question-page hidden" data-question="3">
+                        <div class="bg-light p-5 rounded-lg mb-6 border-l-4 border-primary">
+                            <p class="text-lg md:text-xl">第三题：小明家门前有一条60m长的小路，绿化队要在小路一旁栽一排树，每隔10m栽一棵树（两端都不栽）。一共要栽多少棵树？</p>
+                        </div>
+                        <div class="question-form" data-correct-length="60" data-correct-interval="10" data-correct-type="noEnd" data-correct-count="5"></div>
+                        
+                        <!-- 下一题按钮（第3题显示） -->
+                        <div class="mt-10 text-center">
+                            <button class="next-question-btn px-8 py-4 bg-primary text-white rounded-lg btn-hover text-lg" data-next="4">
+                                下一题 <i class="fa fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 题目4 -->
+                    <div class="question-page hidden" data-question="4">
+                        <div class="bg-light p-5 rounded-lg mb-6 border-l-4 border-primary">
+                            <p class="text-lg md:text-xl">第四题：小明家门前有一个周长30m长的花坛，爷爷要在花坛一周栽一排花，每隔6m栽一棵花。一共要栽多少棵花？</p>
+                        </div>
+                        <div class="question-form" data-correct-length="30" data-correct-interval="6" data-correct-type="circle" data-correct-count="5"></div>
+                        
+                        <!-- 检验结果按钮（第4题显示） -->
+                        <div class="mt-10 text-center">
+                            <button id="checkResultBtn" class="px-8 py-4 bg-accent text-white rounded-lg btn-hover text-lg">
+                                检验结果 <i class="fa fa-check ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 检验结果反馈区域（初始隐藏） -->
+                <div id="resultFeedback" class="mt-10 p-6 rounded-xl border hidden page-transition">
+                    <h3 class="text-2xl font-bold mb-6 text-center" id="feedbackTitle"></h3>
+                    <div id="feedbackContent" class="mb-6"></div>
+                    
+                    <!-- 错题练习区域 -->
+                    <div id="errorExercises" class="mt-8 hidden">
+                        <h4 class="text-xl font-semibold text-dark mb-4 flex items-center">
+                            <i class="fa fa-book mr-2 text-accent"></i>针对性练习（3道）
+                        </h4>
+                        <div class="exercises-list space-y-4 p-4 bg-light/50 rounded-lg"></div>
+                    </div>
+                    
+                    <!-- 学生端退出按钮 -->
+                    <div class="mt-10 text-center">
+                        <button id="studentExitBtn" class="px-8 py-4 bg-gray-500 text-white rounded-lg btn-hover text-lg">
+                            <i class="fa fa-sign-out mr-2"></i> 退出
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- 题目页面（初始隐藏） -->
-        <div id="questionPages" class="hidden page-transition">
-            <!-- 题目导航 -->
-            <div class="flex justify-center mb-8 flex-wrap gap-3">
-                <button class="question-nav-btn px-5 py-3 border-2 rounded-lg text-dark" data-question="1">第1题</button>
-                <button class="question-nav-btn px-5 py-3 border-2 rounded-lg text-dark" data-question="2">第2题</button>
-                <button class="question-nav-btn px-5 py-3 border-2 rounded-lg text-dark" data-question="3">第3题</button>
-                <button class="question-nav-btn px-5 py-3 border-2 rounded-lg text-dark" data-question="4">第4题</button>
+        <!-- 教师端界面（初始隐藏） -->
+        <div id="teacherInterface" class="bg-white rounded-xl p-6 md:p-8 card-shadow hidden page-transition">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-2xl font-bold text-dark flex items-center">
+                    <i class="fa fa-tachometer mr-3 text-primary"></i>教师数据中心
+                </h2>
+                <button id="teacherExitBtn" class="px-5 py-2 bg-gray-200 text-dark rounded-lg btn-hover">
+                    <i class="fa fa-sign-out mr-1"></i> 退出
+                </button>
             </div>
 
-            <!-- 题目内容区域 -->
-            <div id="questionContent">
-                <!-- 题目将通过JavaScript动态生成 -->
+            <!-- 数据概览 -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                <div class="p-5 border rounded-xl bg-blue-50 border-blue-100 transform transition-all hover:scale-105">
+                    <div class="text-sm text-blue-600">参与学生数</div>
+                    <div class="text-3xl font-bold text-blue-700 mt-2" id="totalStudents">0</div>
+                </div>
+                <div class="p-5 border rounded-xl bg-green-50 border-green-100 transform transition-all hover:scale-105">
+                    <div class="text-sm text-green-600">全对人数</div>
+                    <div class="text-3xl font-bold text-green-700 mt-2" id="fullCorrectStudents">0</div>
+                </div>
+                <div class="p-5 border rounded-xl bg-yellow-50 border-yellow-100 transform transition-all hover:scale-105">
+                    <div class="text-sm text-yellow-600">平均正确率</div>
+                    <div class="text-3xl font-bold text-yellow-700 mt-2" id="averageAccuracy">0%</div>
+                </div>
+                <div class="p-5 border rounded-xl bg-purple-50 border-purple-100 transform transition-all hover:scale-105">
+                    <div class="text-sm text-purple-600">总答题次数</div>
+                    <div class="text-3xl font-bold text-purple-700 mt-2" id="totalAttempts">0</div>
+                </div>
             </div>
 
-            <!-- 通用题目表单（由JS动态生成） -->
-            <template id="questionFormTemplate">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                    <div>
-                        <label class="block text-neutral mb-2 text-lg">道路长度：（ ）米</label>
-                        <input type="number" class="road-length-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all" min="1">
+            <!-- 热力图区域 -->
+            <div class="mb-10">
+                <h3 class="text-xl font-semibold text-dark mb-5 flex items-center">
+                    <i class="fa fa-fire mr-2 text-orange-500"></i>各类型题目正确率热力图
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="p-5 rounded-xl text-center" id="heatBothEnds">
+                        <div class="font-bold mb-3">两端都栽</div>
+                        <div class="text-3xl" id="rateBothEnds">0%</div>
                     </div>
-                    <div>
-                        <label class="block text-neutral mb-2 text-lg">两棵树之间的间隔距离：（ ）米</label>
-                        <input type="number" class="interval-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all" min="1">
+                    <div class="p-5 rounded-xl text-center" id="heatOneEnd">
+                        <div class="font-bold mb-3">一端栽一端不栽</div>
+                        <div class="text-3xl" id="rateOneEnd">0%</div>
                     </div>
-                </div>
-                
-                <div class="mb-8">
-                    <label class="block text-neutral mb-3 text-lg">植树类型：</label>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="flex items-center p-3 border border-gray-200 rounded-lg">
-                            <input type="radio" id="plantType-bothEnds-{{questionNum}}" name="plantType" value="bothEnds" class="mr-3 h-5 w-5 text-primary">
-                            <label for="plantType-bothEnds-{{questionNum}}" class="cursor-pointer">两端都栽</label>
-                        </div>
-                        <div class="flex items-center p-3 border border-gray-200 rounded-lg">
-                            <input type="radio" id="plantType-oneEnd-{{questionNum}}" name="plantType" value="oneEnd" class="mr-3 h-5 w-5 text-primary">
-                            <label for="plantType-oneEnd-{{questionNum}}" class="cursor-pointer">一端栽一端不栽</label>
-                        </div>
-                        <div class="flex items-center p-3 border border-gray-200 rounded-lg">
-                            <input type="radio" id="plantType-noEnd-{{questionNum}}" name="plantType" value="noEnd" class="mr-3 h-5 w-5 text-primary">
-                            <label for="plantType-noEnd-{{questionNum}}" class="cursor-pointer">两端都不栽</label>
-                        </div>
-                        <div class="flex items-center p-3 border border-gray-200 rounded-lg">
-                            <input type="radio" id="plantType-circle-{{questionNum}}" name="plantType" value="circle" class="mr-3 h-5 w-5 text-primary">
-                            <label for="plantType-circle-{{questionNum}}" class="cursor-pointer">封闭环形</label>
-                        </div>
+                    <div class="p-5 rounded-xl text-center" id="heatNoEnd">
+                        <div class="font-bold mb-3">两端都不栽</div>
+                        <div class="text-3xl" id="rateNoEnd">0%</div>
+                    </div>
+                    <div class="p-5 rounded-xl text-center" id="heatCircle">
+                        <div class="font-bold mb-3">封闭环形曲线</div>
+                        <div class="text-3xl" id="rateCircle">0%</div>
                     </div>
                 </div>
-                
-                <div class="mb-8">
-                    <label class="block text-neutral mb-2 text-lg">计算过程与结果：（请写出计算过程和答案）</label>
-                    <textarea class="calculation-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all" rows="3" placeholder="例如：20÷4=5（间隔），5+1=6（棵）"></textarea>
-                </div>
-                
-                <div class="mb-6">
-                    <button class="draw-btn px-6 py-3 bg-accent text-white rounded-lg btn-hover">
-                        <i class="fa fa-paint-brush mr-2"></i>绘制示意图
-                    </button>
-                </div>
-                
-                <!-- 示意图画布 -->
-                <div class="mb-8">
-                    <canvas class="road-canvas border border-gray-200 rounded-lg w-full bg-white"></canvas>
-                </div>
-            </template>
-        </div>
-
-        <!-- 结果反馈区域（初始隐藏） -->
-        <div id="resultFeedback" class="hidden opacity-0 page-transition bg-white rounded-2xl shadow-lg p-8 mt-10">
-            <h2 id="feedbackTitle" class="text-2xl font-bold mb-6 text-center"></h2>
-            <div id="feedbackContent" class="mb-8"></div>
-            
-            <!-- 针对性练习区域 -->
-            <div id="errorExercises" class="hidden">
-                <h3 class="text-xl font-semibold mb-4 text-dark">针对性练习：</h3>
-                <div class="exercises-list space-y-6"></div>
             </div>
-            
-            <div class="text-center mt-10">
-                <button id="backToHomeBtn" class="px-8 py-4 bg-primary text-white rounded-lg btn-hover text-lg">
-                    返回首页 <i class="fa fa-home ml-2"></i>
+
+            <!-- 班级错题统计 -->
+            <div class="mb-10">
+                <h3 class="text-xl font-semibold text-dark mb-5 flex items-center">
+                    <i class="fa fa-bar-chart mr-2 text-primary"></i>班级错题分布
+                </h3>
+                <div class="overflow-x-auto bg-light/30 rounded-xl p-1">
+                    <table class="min-w-full">
+                        <thead>
+                            <tr class="bg-white">
+                                <th class="px-6 py-4 border-b text-left">班级</th>
+                                <th class="px-6 py-4 border-b text-left">总人数</th>
+                                <th class="px-6 py-4 border-b text-left">全对人数</th>
+                                <th class="px-6 py-4 border-b text-left">错误率最高类型</th>
+                            </tr>
+                        </thead>
+                        <tbody id="classErrorStats">
+                            <tr>
+                                <td colspan="4" class="px-6 py-4 border-b text-center">暂无数据</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 错题分析报告 -->
+            <div>
+                <h3 class="text-xl font-semibold text-dark mb-5 flex items-center">
+                    <i class="fa fa-file-text mr-2 text-accent"></i>错题分析报告
+                </h3>
+                <div id="errorReport" class="border border-gray-200 rounded-xl p-5 bg-light/30">
+                    <p class="mb-3">1. 各类型题目错误率统计：</p>
+                    <ul id="errorRateList" class="list-disc ml-6 mb-6 space-y-1">
+                        <li>两端都栽：0%（0/0人错误）</li>
+                        <li>一端栽一端不栽：0%（0/0人错误）</li>
+                        <li>两端都不栽：0%（0/0人错误）</li>
+                        <li>封闭环形曲线：0%（0/0人错误）</li>
+                    </ul>
+                    <p class="mb-3">2. 主要错误原因：暂无数据</p>
+                    <p class="mb-3">3. 教学建议：暂无数据</p>
+                    <p class="text-sm text-neutral">数据更新时间：--</p>
+                </div>
+            </div>
+
+            <!-- 教师操作按钮 -->
+            <div class="mt-10 flex flex-wrap gap-4 justify-center">
+                <button id="exportAnalysisBtn" class="px-6 py-3 bg-primary text-white rounded-lg btn-hover">
+                    <i class="fa fa-download mr-2"></i>导出分析报告
+                </button>
+                <button id="clearDataBtn" class="px-6 py-3 bg-red-500 text-white rounded-lg btn-hover">
+                    <i class="fa fa-trash mr-2"></i>清空所有数据
                 </button>
             </div>
         </div>
+    </div>
 
-        <!-- 音效资源 -->
-        <audio id="clapSound" src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3" preload="auto"></audio>
+    <!-- 题目表单模板 -->
+    <template id="questionFormTemplate">
+        <div class="space-y-6">
+            <div>
+                <label class="block text-neutral mb-2 text-lg">小路/花坛长度（米）：</label>
+                <input type="number" class="road-length-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all" min="1">
+            </div>
+            
+            <div>
+                <label class="block text-neutral mb-2 text-lg">间隔距离（米）：</label>
+                <input type="number" class="interval-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all" min="1">
+            </div>
+            
+            <div>
+                <label class="block text-neutral mb-3 text-lg">栽树类型：</label>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-light cursor-pointer transition-colors">
+                        <input type="radio" name="plantType" value="bothEnds" class="mr-3 plant-type-radio w-5 h-5">两端都栽
+                    </label>
+                    <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-light cursor-pointer transition-colors">
+                        <input type="radio" name="plantType" value="oneEnd" class="mr-3 plant-type-radio w-5 h-5">一端栽一端不栽
+                    </label>
+                    <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-light cursor-pointer transition-colors">
+                        <input type="radio" name="plantType" value="noEnd" class="mr-3 plant-type-radio w-5 h-5">两端都不栽
+                    </label>
+                    <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-light cursor-pointer transition-colors">
+                        <input type="radio" name="plantType" value="circle" class="mr-3 plant-type-radio w-5 h-5">封闭环形曲线上栽树
+                    </label>
+                </div>
+            </div>
 
-        <script>
-            // 全局数据存储（使用localStorage持久化）
-            let studentRecords = JSON.parse(localStorage.getItem('plantingProblemRecords')) || [];
-            let currentQuestion = 1;
-            let studentInfo = { name: '', className: '' };
-            let 答题开始时间 = null; // 记录整体答题开始时间
-            let questionData = {}; // 存储各题目的独立数据，动态生成
-            let questionBank = []; // 题库数据
-            let selectedQuestions = []; // 选中的4道题目
+            <div class="mb-8">
+                <button class="draw-btn px-5 py-3 bg-secondary text-white rounded-lg btn-hover mb-5">
+                    <i class="fa fa-paint-brush mr-2"></i>绘制示意图
+                </button>
+                <div class="border border-gray-200 rounded-lg p-4 bg-light/50">
+                    <canvas class="plant-canvas w-full max-w-full h-[280px] bg-white rounded-lg shadow-sm" width="800" height="280"></canvas>
+                </div>
+            </div>
 
-            // 初始化页面
-            document.addEventListener('DOMContentLoaded', () => {
-                // 加载题库
-                loadQuestionBank().then(() => {
-                    // 生成题目表单
-                    generateQuestionForms();
-                });
-                
-                // 全屏切换功能
-                document.getElementById('fullscreenBtn').addEventListener('click', toggleFullScreen);
-                
-// 修复角色按钮的事件监听
-                document.getElementById('studentBtn').addEventListener('click', () => {
-                    switchToRole('student');
-                });
+            <div class="mb-6">
+                <label class="block text-neutral mb-2 text-lg">计算过程和结果：</label>
+                <input type="text" class="calculation-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all" style="min-height: 50px;">
+            </div>
+        </div>
+    </template>
 
-                document.getElementById('teacherBtn').addEventListener('click', () => {
-                    switchToRole('teacher');
-                });
-                // 开始答题按钮
-                document.getElementById('startBtn').addEventListener('click', startQuiz);
+    <!-- 音效资源 -->
+    <audio id="clapSound" src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3" preload="auto"></audio>
+
+    <script>
+        // 全局数据存储（使用localStorage持久化）
+        let studentRecords = JSON.parse(localStorage.getItem('plantingProblemRecords')) || [];
+        let currentQuestion = 1;
+        let studentInfo = { name: '', className: '' };
+        let 答题开始时间 = null; // 记录整体答题开始时间
+        // 存储各题目的独立数据，确保页面间数据不干扰
+        let questionData = {
+            1: { roadLength: '', interval: '', plantType: '', calculation: '' },
+            2: { roadLength: '', interval: '', plantType: '', calculation: '' },
+            3: { roadLength: '', interval: '', plantType: '', calculation: '' },
+            4: { roadLength: '', interval: '', plantType: '', calculation: '' }
+        };
+
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', () => {
+            // 生成题目表单
+            generateQuestionForms();
+            
+            // 全屏切换功能
+            document.getElementById('fullscreenBtn').addEventListener('click', toggleFullScreen);
+            
+            // 角色切换功能
+            function switchToRole(role) {
+                // 先检查所有需要操作的元素是否存在
+                const studentInterface = document.getElementById('studentInterface');
+                const teacherInterface = document.getElementById('teacherInterface');
+                const teacherLogin = document.getElementById('teacherLogin');
                 
-                // 教师登录按钮
-                document.getElementById('teacherLoginBtn').addEventListener('click', () => {
-                    // 简单密码验证，实际应用中应使用更安全的验证方式
-                    if (document.getElementById('teacherPassword').value === 'teacher123') {
-                        document.getElementById('teacherDashboard').classList.remove('hidden');
-                        updateTeacherDashboard();
-                        showNotification('登录成功', 'success');
-                    } else {
-                        showNotification('密码错误', 'error');
-                    }
-                });
-                
-                // 返回首页按钮
-                document.getElementById('backToHomeBtn').addEventListener('click', backToHome);
-                
-                // 导出分析报告按钮
-                document.getElementById('exportAnalysisBtn').addEventListener('click', exportAnalysisReport);
-                
-                // 初始化显示学生界面
+                // 确保所有元素都存在再进行操作
+                if (!studentInterface || !teacherInterface || !teacherLogin) {
+                    console.error('角色切换所需的界面元素未找到');
+                    return;
+                }
+
+                if (role === 'student') {
+                    studentInterface.classList.remove('hidden');
+                    teacherInterface.classList.add('hidden');
+                    teacherLogin.classList.add('hidden');
+                } else {
+                    studentInterface.classList.add('hidden');
+                    teacherInterface.classList.add('hidden');
+                    teacherLogin.classList.remove('hidden');
+                    // 清除密码和错误提示
+                    const passwordInput = document.getElementById('teacherPassword');
+                    const loginError = document.getElementById('loginError');
+                    if (passwordInput) passwordInput.value = '';
+                    if (loginError) loginError.classList.add('hidden');
+                }
+                updateRoleBtnStyles(role);
+            }
+
+            document.getElementById('studentBtn').addEventListener('click', () => {
                 switchToRole('student');
             });
 
-            // 加载题库
-            async function loadQuestionBank() {
-                try {
-                    const response = await fetch('question_bank.json');
-                    if (!response.ok) {
-                        throw new Error('题库加载失败');
-                    }
-                    questionBank = await response.json();
-                    
-                    // 随机抽取4道题，确保类型多样化
-                    selectedQuestions = selectRandomQuestions(4);
-                    return true;
-                } catch (error) {
-                    console.error('加载题库时出错:', error);
-                    // 如果加载失败，使用默认题目
-                    selectedQuestions = getDefaultQuestions();
-                    return true;
-                }
-            }
+            document.getElementById('teacherBtn').addEventListener('click', () => {
+                switchToRole('teacher');
+            });
 
-            // 从题库随机选择指定数量的题目
-            function selectRandomQuestions(count) {
-                // 确保题库有足够的题目
-                if (questionBank.length < count) {
-                    return getDefaultQuestions();
-                }
-                
-                // 复制题库以避免修改原数组
-                const shuffled = [...questionBank].sort(() => 0.5 - Math.random());
-                
-                // 尝试均衡选择不同类型的题目
-                const types = ['bothEnds', 'oneEnd', 'noEnd', 'circle'];
-                const selected = [];
-                const typeCount = {};
-                
-                // 初始化类型计数
-                types.forEach(type => typeCount[type] = 0);
-                
-                // 优先选择不同类型的题目
-                for (const question of shuffled) {
-                    if (selected.length >= count) break;
-                    
-                    // 如果某种类型还没有选中，优先选择
-                    if (typeCount[question.type] === 0) {
-                        selected.push(question);
-                        typeCount[question.type]++;
-                    }
-                }
-                
-                // 如果还没选够，从剩余题目中补充
-                if (selected.length < count) {
-                    for (const question of shuffled) {
-                        if (selected.length >= count) break;
-                        if (!selected.includes(question)) {
-                            selected.push(question);
-                        }
-                    }
-                }
-                
-                return selected;
-            }
-
-            // 获取默认题目（当题库加载失败时使用）
-            function getDefaultQuestions() {
-                return [
-                    {
-                        id: 1,
-                        text: "第一题：小明家门前有一条20m长的小路，绿化队要在小路一旁栽一排树，每隔4m栽一棵树（两端都栽）。一共要栽多少棵树？",
-                        type: "bothEnds",
-                        length: 20,
-                        interval: 4,
-                        answer: 6
-                    },
-                    {
-                        id: 2,
-                        text: "第二题：小明家门前有一条35m长的小路，绿化队要在小路一旁栽一排树，每隔7m栽一棵树，一端靠墙。一共要栽多少棵树？",
-                        type: "oneEnd",
-                        length: 35,
-                        interval: 7,
-                        answer: 5
-                    },
-                    {
-                        id: 3,
-                        text: "第三题：小明家门前有一条60m长的小路，绿化队要在小路一旁栽一排树，每隔10m栽一棵树（两端都不栽）。一共要栽多少棵树？",
-                        type: "noEnd",
-                        length: 60,
-                        interval: 10,
-                        answer: 5
-                    },
-                    {
-                        id: 4,
-                        text: "第四题：小明家门前有一个周长30m长的花坛，爷爷要在花坛一周栽一排花，每隔6m栽一棵花。一共要栽多少棵花？",
-                        type: "circle",
-                        length: 30,
-                        interval: 6,
-                        answer: 5
-                    }
-                ];
-            }
-
-    // 角色切换功能
-    function switchToRole(role) {
-    // 先检查所有需要操作的元素是否存在
-        const studentInterface = document.getElementById('studentInterface');
-        const teacherInterface = document.getElementById('teacherInterface');
-        const teacherLogin = document.getElementById('teacherLogin');
-    
-    // 确保所有元素都存在再进行操作
-        if (!studentInterface || !teacherInterface || !teacherLogin) {
-            console.error('角色切换所需的界面元素未找到');
-            return;
-        }
-
-        if (role === 'student') {
-            studentInterface.classList.remove('hidden');
-            teacherInterface.classList.add('hidden');
-            teacherLogin.classList.add('hidden');
-        } else {
-            studentInterface.classList.add('hidden');
-            teacherInterface.classList.add('hidden');
-            teacherLogin.classList.remove('hidden');
-            // 清除密码和错误提示
-            const passwordInput = document.getElementById('teacherPassword');
-            const loginError = document.getElementById('loginError');
-            if (passwordInput) passwordInput.value = '';
-            if (loginError) loginError.classList.add('hidden');
-        }
-        updateRoleBtnStyles(role);
-    }
-            // 更新角色按钮样式
-            function updateRoleBtnStyles(activeRole) {
-                if (activeRole === 'student') {
-                    document.getElementById('studentBtn').classList.add('bg-primary', 'text-white');
-                    document.getElementById('studentBtn').classList.remove('bg-white', 'text-dark');
-                    document.getElementById('teacherBtn').classList.add('bg-white', 'text-dark');
-                    document.getElementById('teacherBtn').classList.remove('bg-primary', 'text-white');
+            // 教师登录相关按钮
+            document.getElementById('loginBtn').addEventListener('click', () => {
+                const password = document.getElementById('teacherPassword').value;
+                if (password === '1234') {
+                    document.getElementById('teacherLogin').classList.add('hidden');
+                    document.getElementById('teacherInterface').classList.remove('hidden');
+                    updateTeacherDashboard();
                 } else {
-                    document.getElementById('teacherBtn').classList.add('bg-primary', 'text-white');
-                    document.getElementById('teacherBtn').classList.remove('bg-white', 'text-dark');
-                    document.getElementById('studentBtn').classList.add('bg-white', 'text-dark');
-                    document.getElementById('studentBtn').classList.remove('bg-primary', 'text-white');
+                    document.getElementById('loginError').classList.remove('hidden');
+                    // 添加抖动动画
+                    const input = document.getElementById('teacherPassword');
+                    input.classList.add('animate-shake');
+                    setTimeout(() => input.classList.remove('animate-shake'), 500);
                 }
-            }
+            });
 
-            // 生成题目表单
-            function generateQuestionForms() {
-                const template = document.getElementById('questionFormTemplate').innerHTML;
-                const questionContent = document.getElementById('questionContent');
-                questionContent.innerHTML = '';
-                
-                // 初始化题目数据存储
-                questionData = {};
-                
-                // 为每道选中的题目生成表单
-                selectedQuestions.forEach((question, index) => {
-                    const questionNum = index + 1;
-                    questionData[questionNum] = {
-                        roadLength: '',
-                        interval: '',
-                        plantType: '',
-                        calculation: ''
-                    };
-                    
-                    // 创建题目容器
-                    const questionDiv = document.createElement('div');
-                    questionDiv.className = `question-page ${questionNum === 1 ? '' : 'hidden'}`;
-                    questionDiv.setAttribute('data-question', questionNum);
-                    
-                    // 设置题目内容
-                    questionDiv.innerHTML = `
-                        <div class="bg-light p-5 rounded-lg mb-6 border-l-4 border-primary">
-                            <p class="text-lg md:text-xl">${question.text}</p>
-                        </div>
-                        <div class="question-form" 
-                             data-correct-length="${question.length}" 
-                             data-correct-interval="${question.interval}" 
-                             data-correct-type="${question.type}" 
-                             data-correct-count="${question.answer}">
-                        </div>
-                        
-                        <!-- 导航按钮 -->
-                        <div class="mt-10 text-center">
-                            ${questionNum < 4 ? 
-                                `<button class="next-question-btn px-8 py-4 bg-primary text-white rounded-lg btn-hover text-lg" data-next="${questionNum + 1}">
-                                    下一题 <i class="fa fa-arrow-right ml-2"></i>
-                                </button>` : 
-                                `<button id="checkAllBtn" class="px-8 py-4 bg-accent text-white rounded-lg btn-hover text-lg">
-                                    <i class="fa fa-check-circle mr-2"></i> 检验所有结果
-                                </button>`
-                            }
-                        </div>
-                    `;
-                    
-                    // 添加到页面
-                    questionContent.appendChild(questionDiv);
-                    
-                    // 填充表单模板
-                    const formContainer = questionDiv.querySelector('.question-form');
-                    // 替换模板中的占位符
-                    const formHtml = template.replace(/{{questionNum}}/g, questionNum);
-                    formContainer.innerHTML = formHtml;
-                    
-                    // 添加绘制按钮事件
-                    const drawBtn = questionDiv.querySelector('.draw-btn');
-                    drawBtn.addEventListener('click', function() {
-                        drawRoadMap(questionDiv);
-                    });
-                });
-                
-                // 添加题目导航按钮事件
-                document.querySelectorAll('.question-nav-btn').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const questionNum = parseInt(btn.getAttribute('data-question'));
-                        saveCurrentQuestionData();
-                        setActiveQuestion(questionNum);
-                    });
-                });
-                
-                // 添加下一题按钮事件
-                document.querySelectorAll('.next-question-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const currentQuestionPage = document.querySelector(`.question-page[data-question="${currentQuestion}"]`);
-                        const roadLength = currentQuestionPage.querySelector('.road-length-input').value;
-                        const interval = currentQuestionPage.querySelector('.interval-input').value;
-                        const plantType = currentQuestionPage.querySelector('input[name="plantType"]:checked')?.value;
-                        const calculation = currentQuestionPage.querySelector('.calculation-input').value;
-                        
-                        if (!roadLength || !interval || !plantType || !calculation) {
-                            showNotification('请先完成当前题目的所有内容再进入下一题', 'error');
-                            return;
-                        }
-                        
-                        saveCurrentQuestionData();
-                        const nextQuestion = parseInt(this.getAttribute('data-next'));
-                        setActiveQuestion(nextQuestion);
-                    });
-                });
-                
-                // 添加检验按钮事件
-                document.getElementById('checkAllBtn')?.addEventListener('click', function() {
-                    saveCurrentQuestionData();
-                    this.disabled = true;
-                    this.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i>检验中...';
-                    
-                    setTimeout(() => {
-                        if (!studentInfo.name || !studentInfo.className) {
-                            showNotification('请先返回首页填写姓名和班级', 'error');
-                            this.disabled = false;
-                            this.innerHTML = '<i class="fa fa-check-circle mr-2"></i> 检验所有结果';
-                            return;
-                        }
-                        
-                        checkAllAnswers();
-                        this.disabled = false;
-                        this.innerHTML = '<i class="fa fa-check-circle mr-2"></i> 检验所有结果';
-                    }, 600);
-                });
-            }
+            document.getElementById('teacherExitLoginBtn').addEventListener('click', () => {
+                document.getElementById('teacherLogin').classList.add('hidden');
+                document.getElementById('studentInterface').classList.remove('hidden');
+                updateRoleBtnStyles('student');
+            });
 
-            // 设置当前激活的题目
-            function setActiveQuestion(questionNum) {
-                const currentPage = document.querySelector(`.question-page:not(.hidden)`);
-                currentPage.classList.add('opacity-0');
-                
-                setTimeout(() => {
-                    currentQuestion = questionNum;
-                    
-                    document.querySelectorAll('.question-page').forEach(page => {
-                        const pageNum = parseInt(page.getAttribute('data-question'));
-                        if (pageNum === questionNum) {
-                            page.classList.remove('hidden');
-                            loadQuestionData(questionNum);
-                            setTimeout(() => {
-                                page.classList.remove('opacity-0');
-                            }, 50);
-                        } else {
-                            page.classList.add('hidden');
-                            page.classList.remove('opacity-0');
-                        }
-                    });
-                    
-                    document.querySelectorAll('.question-nav-btn').forEach(btn => {
-                        const btnNum = parseInt(btn.getAttribute('data-question'));
-                        btn.classList.remove('border-red-500', 'text-red-500');
-                        
-                        if (btnNum === questionNum) {
-                            btn.classList.add('border-primary', 'bg-primary/10', 'text-primary');
-                        } else {
-                            btn.classList.remove('border-primary', 'bg-primary/10', 'text-primary');
-                        }
-                    });
-                }, 300);
-            }
-
-            // 开始答题
-            function startQuiz() {
+            // 学生开始答题按钮
+            document.getElementById('startBtn').addEventListener('click', function() {
                 const name = document.getElementById('studentName').value.trim();
                 const className = document.getElementById('studentClass').value;
                 
@@ -655,6 +467,7 @@
                 studentInfo = { name, className };
                 答题开始时间 = new Date();
                 
+                // 切换到题目页面（带动画）
                 document.getElementById('studentHome').classList.add('opacity-0');
                 setTimeout(() => {
                     document.getElementById('studentHome').classList.add('hidden');
@@ -666,222 +479,64 @@
                 }, 300);
                 
                 setActiveQuestion(1);
-            }
+            });
 
-            // 保存当前题目的数据
-            function saveCurrentQuestionData() {
-                const questionPage = document.querySelector(`.question-page[data-question="${currentQuestion}"]`);
-                
-                questionData[currentQuestion] = {
-                    roadLength: questionPage.querySelector('.road-length-input').value,
-                    interval: questionPage.querySelector('.interval-input').value,
-                    plantType: questionPage.querySelector('input[name="plantType"]:checked')?.value || '',
-                    calculation: questionPage.querySelector('.calculation-input').value
-                };
-            }
-
-            // 加载指定题目的数据
-            function loadQuestionData(questionNum) {
-                const questionPage = document.querySelector(`.question-page[data-question="${questionNum}"]`);
-                const data = questionData[questionNum];
-                
-                questionPage.querySelector('.road-length-input').value = data.roadLength;
-                questionPage.querySelector('.interval-input').value = data.interval;
-                
-                // 清除所有选中状态
-                questionPage.querySelectorAll('input[name="plantType"]').forEach(radio => {
-                    radio.checked = false;
+            // 题目导航按钮
+            document.querySelectorAll('.question-nav-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const questionNum = parseInt(btn.getAttribute('data-question'));
+                    // 保存当前页面数据
+                    saveCurrentQuestionData();
+                    // 切换到新题目
+                    setActiveQuestion(questionNum);
                 });
-                
-                // 设置选中状态
-                const selectedRadio = questionPage.querySelector(`input[name="plantType"][value="${data.plantType}"]`);
-                if (selectedRadio) {
-                    selectedRadio.checked = true;
-                }
-                
-                questionPage.querySelector('.calculation-input').value = data.calculation;
-            }
+            });
 
-            // 绘制道路示意图
-            function drawRoadMap(questionPage) {
-                const drawBtn = questionPage.querySelector('.draw-btn');
-                drawBtn.disabled = true;
-                drawBtn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i>绘制中...';
-                
-                const roadLength = parseInt(questionPage.querySelector('.road-length-input').value);
-                const interval = parseInt(questionPage.querySelector('.interval-input').value);
-                const plantType = questionPage.querySelector('input[name="plantType"]:checked')?.value;
-                
-                if (!roadLength || !interval || !plantType) {
-                    showNotification('请先填写道路长度、间隔和选择植树类型', 'error');
-                    drawBtn.disabled = false;
-                    drawBtn.innerHTML = '<i class="fa fa-paint-brush mr-2"></i>绘制示意图';
-                    return;
-                }
-                
-                const canvas = questionPage.querySelector('.road-canvas');
-                const ctx = canvas.getContext('2d');
-                
-                // 设置画布尺寸
-                canvas.width = canvas.offsetWidth;
-                canvas.height = 150;
-                
-                // 清空画布
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                
-                // 绘制道路
-                ctx.fillStyle = '#E0E0E0';
-                ctx.fillRect(50, canvas.height - 40, canvas.width - 100, 30);
-                
-                // 根据类型绘制树
-                setTimeout(() => {
-                    if (plantType === 'circle') {
-                        drawCircle(canvas, roadLength, interval);
-                    } else {
-                        const startWithPlant = plantType === 'bothEnds' || plantType === 'oneEnd';
-                        const endWithPlant = plantType === 'bothEnds';
-                        drawLinear(canvas, roadLength, interval, startWithPlant, endWithPlant);
+            // 下一题按钮
+            document.querySelectorAll('.next-question-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // 验证当前题目是否填写完整
+                    const currentQuestionPage = document.querySelector(`.question-page[data-question="${currentQuestion}"]`);
+                    const roadLength = currentQuestionPage.querySelector('.road-length-input').value;
+                    const interval = currentQuestionPage.querySelector('.interval-input').value;
+                    const plantType = currentQuestionPage.querySelector('input[name="plantType"]:checked');
+                    const calculation = currentQuestionPage.querySelector('.calculation-input').value;
+                    
+                    if (!roadLength || !interval || !plantType || !calculation) {
+                        showNotification('请完成当前题目的所有内容', 'error');
+                        return;
                     }
                     
-                    drawBtn.disabled = false;
-                    drawBtn.innerHTML = '<i class="fa fa-paint-brush mr-2"></i>绘制示意图';
-                    showNotification('示意图绘制完成', 'success');
-                }, 300);
-            }
-
-            // 绘制直线型道路
-            function drawLinear(canvas, roadLength, interval, startWithPlant, endWithPlant) {
-                const ctx = canvas.getContext('2d');
-                const roadStartX = 50;
-                const roadEndX = canvas.width - 50;
-                const roadY = canvas.height - 25;
-                const segmentLength = (roadEndX - roadStartX) / roadLength;
-                
-                // 绘制刻度
-                ctx.beginPath();
-                ctx.strokeStyle = '#BBBBBB';
-                ctx.lineWidth = 1;
-                
-                for (let i = 0; i <= roadLength; i += interval) {
-                    const x = roadStartX + i * segmentLength;
-                    ctx.moveTo(x, roadY - 10);
-                    ctx.lineTo(x, roadY + 10);
+                    // 保存当前页面数据
+                    saveCurrentQuestionData();
                     
-                    // 绘制距离标签
-                    ctx.fillStyle = '#666';
-                    ctx.font = '12px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.fillText(i + 'm', x, roadY + 25);
-                }
-                ctx.stroke();
-                
-                // 绘制树
-                let treeIndex = 0;
-                const drawTree = (x) => {
-                    setTimeout(() => {
-                        // 树干
-                        ctx.fillStyle = '#8B4513';
-                        ctx.fillRect(x - 3, roadY - 20, 6, 15);
-                        
-                        // 树叶
-                        ctx.fillStyle = '#228B22';
-                        ctx.beginPath();
-                        ctx.arc(x, roadY - 30, 10, 0, Math.PI * 2);
-                        ctx.fill();
-                    }, treeIndex * 100);
-                    treeIndex++;
-                };
-                
-                // 起点是否种树
-                if (startWithPlant) {
-                    drawTree(roadStartX);
-                }
-                
-                // 中间的树
-                for (let i = interval; i < roadLength; i += interval) {
-                    const x = roadStartX + i * segmentLength;
-                    drawTree(x);
-                }
-                
-                // 终点是否种树
-                if (endWithPlant && roadLength % interval === 0) {
-                    drawTree(roadEndX);
-                }
-            }
+                    // 切换到下一题
+                    const nextQuestion = parseInt(this.getAttribute('data-next'));
+                    setActiveQuestion(nextQuestion);
+                });
+            });
 
-            // 绘制环形道路
-            function drawCircle(canvas, roadLength, interval) {
-                const ctx = canvas.getContext('2d');
-                const centerX = canvas.width / 2;
-                const centerY = canvas.height / 2;
-                const radius = Math.min(canvas.width, canvas.height) / 3;
-                
-                // 绘制环形道路
-                ctx.beginPath();
-                ctx.strokeStyle = '#E0E0E0';
-                ctx.lineWidth = 30;
-                ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-                ctx.stroke();
-                
-                // 计算树的数量
-                const treeCount = roadLength / interval;
-                
-                // 绘制树
-                let treeIndex = 0;
-                for (let i = 0; i < treeCount; i++) {
-                    const angle = (i / treeCount) * Math.PI * 2;
-                    const x = centerX + Math.cos(angle) * radius;
-                    const y = centerY + Math.sin(angle) * radius;
-                    
-                    setTimeout(() => {
-                        // 树干
-                        ctx.fillStyle = '#8B4513';
-                        ctx.fillRect(x - 3, y - 10, 6, 10);
-                        
-                        // 树叶
-                        ctx.fillStyle = '#228B22';
-                        ctx.beginPath();
-                        ctx.arc(x, y - 15, 8, 0, Math.PI * 2);
-                        ctx.fill();
-                        
-                        // 距离标签
-                        const labelAngle = angle + Math.PI / 2;
-                        const labelX = centerX + Math.cos(labelAngle) * (radius + 20);
-                        const labelY = centerY + Math.sin(labelAngle) * (radius + 20);
-                        
-                        ctx.fillStyle = '#666';
-                        ctx.font = '12px Arial';
-                        ctx.textAlign = 'center';
-                        ctx.fillText((i * interval) + 'm', labelX, labelY);
-                    }, treeIndex * 100);
-                    treeIndex++;
-                }
-            }
-
-            // 检查所有答案
-            function checkAllAnswers() {
-                const allQuestionsData = [];
+            // 检验结果按钮
+            document.getElementById('checkResultBtn').addEventListener('click', function() {
+                // 验证所有题目是否完成
                 let allCompleted = true;
                 const incompleteQuestions = [];
-
+                const allQuestionsData = [];
+                
                 for (let i = 1; i <= 4; i++) {
-                    const questionPage = document.querySelector(`.question-page[data-question="${i}"]`);
-                    const form = questionPage.querySelector('.question-form');
-                    
-                    const qData = questionData[i];
-                    
+                    const form = document.querySelector(`.question-page[data-question="${i}"] .question-form`);
                     const data = {
-                        questionNum: i,
-                        roadLength: qData.roadLength ? parseInt(qData.roadLength) : null,
-                        interval: qData.interval ? parseInt(qData.interval) : null,
-                        plantType: qData.plantType || null,
-                        calculation: qData.calculation || '',
+                        roadLength: document.querySelector(`.question-page[data-question="${i}"] .road-length-input`).value,
+                        interval: document.querySelector(`.question-page[data-question="${i}"] .interval-input`).value,
+                        plantType: document.querySelector(`.question-page[data-question="${i}"] input[name="plantType"]:checked`)?.value || '',
+                        calculation: document.querySelector(`.question-page[data-question="${i}"] .calculation-input`).value,
                         correctLength: parseInt(form.getAttribute('data-correct-length')),
                         correctInterval: parseInt(form.getAttribute('data-correct-interval')),
                         correctType: form.getAttribute('data-correct-type'),
                         correctCount: parseInt(form.getAttribute('data-correct-count'))
                     };
 
+                    // 检查是否完成答题
                     if (!data.roadLength || !data.interval || !data.plantType || !data.calculation) {
                         allCompleted = false;
                         incompleteQuestions.push(i);
@@ -890,13 +545,16 @@
                     allQuestionsData.push(data);
                 }
 
+                // 未完成所有题目
                 if (!allCompleted) {
                     showNotification(`以下题目未完成：第${incompleteQuestions.join('、')}题，请先完成后再检验！`, 'error');
                     
+                    // 高亮显示未完成的题目导航
                     document.querySelectorAll('.question-nav-btn').forEach(btn => {
                         const btnNum = parseInt(btn.getAttribute('data-question'));
                         if (incompleteQuestions.includes(btnNum)) {
                             btn.classList.add('border-red-500', 'text-red-500', 'animate-pulse');
+                            // 3秒后移除动画
                             setTimeout(() => {
                                 btn.classList.remove('animate-pulse');
                             }, 3000);
@@ -905,552 +563,97 @@
                     
                     return;
                 }
-                
+
                 // 分析答题结果
                 const analysisResult = analyzeAnswers(allQuestionsData);
                 
                 // 记录答题时间
                 const 答题结束时间 = new Date();
-                const 答题时长 = Math.round((答题结束时间 - 答题开始时间) / 1000);
+                const 答题时长 = Math.floor((答题结束时间 - 答题开始时间) / 1000);
                 
                 // 保存记录
-                studentRecords.push({
-                    studentInfo: { ...studentInfo },
+                const record = {
+                    studentInfo: studentInfo,
                     answers: allQuestionsData,
                     result: analysisResult,
-                    timestamp: new Date().toISOString(),
-                    duration: 答题时长
-                });
-                
+                    duration: 答题时长,
+                    timestamp: new Date().toISOString()
+                };
+                studentRecords.push(record);
                 saveRecords();
                 
                 // 显示结果反馈
                 showResultFeedback(analysisResult);
-                
-                // 隐藏题目页面，显示结果
-                document.getElementById('questionPages').classList.add('opacity-0');
-                setTimeout(() => {
-                    document.getElementById('questionPages').classList.add('hidden');
-                    document.getElementById('questionPages').classList.remove('opacity-0');
-                    document.getElementById('resultFeedback').classList.remove('hidden');
-                    setTimeout(() => {
-                        document.getElementById('resultFeedback').classList.remove('opacity-0');
-                    }, 50);
-                }, 300);
-            }
+            });
 
-            // 分析答题结果
-            function analyzeAnswers(questionsData) {
-                const result = {
-                    totalCorrect: 0,
-                    questionResults: [],
-                    allCorrect: false,
-                    errorPatterns: [],
-                    mainErrorType: null
-                };
-
-                questionsData.forEach(question => {
-                    const lengthCorrect = question.roadLength === question.correctLength;
-                    const intervalCorrect = question.interval === question.correctInterval;
-                    const typeCorrect = question.plantType === question.correctType;
-                    
-                    const studentResultMatch = question.calculation.match(/(\d+)(?=\（棵\）|棵|株|个|朵)/);
-                    const studentResult = studentResultMatch ? parseInt(studentResultMatch[1]) : null;
-                    const countCorrect = studentResult === question.correctCount;
-                    
-                    let formulaType = null;
-                    if (question.calculation.includes('+1')) formulaType = 'add1';
-                    else if (question.calculation.includes('-1')) formulaType = 'subtract1';
-                    else if (question.calculation.includes('÷') || question.calculation.includes('/')) formulaType = 'divideOnly';
-
-                    const questionCorrect = lengthCorrect && intervalCorrect && typeCorrect && countCorrect;
-                    if (questionCorrect) result.totalCorrect++;
-
-                    const errorReasons = [];
-                    if (!lengthCorrect) errorReasons.push(`道路长度输入错误（正确应为${question.correctLength}米）`);
-                    if (!intervalCorrect) errorReasons.push(`间隔距离输入错误（正确应为${question.correctInterval}米）`);
-                    if (!typeCorrect) errorReasons.push(`植树类型选择错误（正确应为${getPlantTypeName(question.correctType)}）`);
-                    if (!countCorrect) {
-                        if (studentResult === null) {
-                            errorReasons.push('未正确填写计算结果（需包含数字和单位）');
-                        } else {
-                            errorReasons.push(`计算结果错误（正确应为${question.correctCount}${question.questionNum === 4 ? '朵' : '棵'}）`);
-                        }
-                    }
-
-                    result.questionResults.push({
-                        questionNum: question.questionNum,
-                        correct: questionCorrect,
-                        errorReasons,
-                        correctType: question.correctType,
-                        selectedType: question.plantType,
-                        correctCount: question.correctCount,
-                        studentResult,
-                        formulaType,
-                        correctFormulaType: getCorrectFormulaType(question.correctType)
-                    });
-                });
-
-                analyzeErrorPatterns(result);
-                result.allCorrect = result.totalCorrect === 4;
-
-                return result;
-            }
-
-            // 获取正确的公式类型
-            function getCorrectFormulaType(plantType) {
-                switch (plantType) {
-                    case 'bothEnds': return 'add1';
-                    case 'oneEnd': return 'divideOnly';
-                    case 'noEnd': return 'subtract1';
-                    case 'circle': return 'divideOnly';
-                }
-            }
-
-            // 分析错误模式
-            function analyzeErrorPatterns(result) {
-                const bothEndsQuestion = result.questionResults.find(q => q.correctType === 'bothEnds');
-                const oneEndQuestion = result.questionResults.find(q => q.correctType === 'oneEnd');
-                
-                if (bothEndsQuestion && !bothEndsQuestion.correct && bothEndsQuestion.formulaType !== 'add1') {
-                    result.errorPatterns.push('对"两端都栽"的模型理解有误，未使用正确的公式（间隔数+1）');
-                }
-                
-                if (oneEndQuestion && !oneEndQuestion.correct && oneEndQuestion.formulaType !== 'divideOnly') {
-                    result.errorPatterns.push('对"一端栽一端不栽"的模型理解有误，未使用正确的公式（间隔数）');
-                }
-                
-                const circleQuestion = result.questionResults.find(q => q.correctType === 'circle');
-                if (circleQuestion && !circleQuestion.correct) {
-                    if (circleQuestion.formulaType === 'add1') {
-                        result.errorPatterns.push('将封闭环形栽树错误地按照"两端都栽"的公式计算（间隔数+1）');
-                    } else if (circleQuestion.formulaType === 'subtract1') {
-                        result.errorPatterns.push('将封闭环形栽树错误地按照"两端都不栽"的公式计算（间隔数-1）');
-                    }
-                }
-                
-                const noEndQuestion = result.questionResults.find(q => q.correctType === 'noEnd');
-                if (noEndQuestion && !noEndQuestion.correct && noEndQuestion.formulaType !== 'subtract1') {
-                    result.errorPatterns.push('对"两端都不栽"的模型理解有误，未使用正确的公式（间隔数-1）');
-                }
-                
-                const errorTypeCount = {};
-                result.questionResults.forEach(q => {
-                    if (!q.correct) {
-                        errorTypeCount[q.correctType] = (errorTypeCount[q.correctType] || 0) + 1;
-                    }
-                });
-                
-                if (Object.keys(errorTypeCount).length > 0) {
-                    result.mainErrorType = Object.entries(errorTypeCount).sort((a, b) => b[1] - a[1])[0][0];
-                }
-            }
-
-            // 显示结果反馈
-            function showResultFeedback(analysisResult) {
-                const feedbackTitle = document.getElementById('feedbackTitle');
-                const feedbackContent = document.getElementById('feedbackContent');
-                const resultFeedback = document.getElementById('resultFeedback');
-                const errorExercises = document.getElementById('errorExercises');
-                const exercisesList = document.querySelector('.exercises-list');
-
-                feedbackContent.innerHTML = '';
-                exercisesList.innerHTML = '';
-
-                if (analysisResult.allCorrect) {
-                    resultFeedback.className = 'mt-10 p-6 rounded-xl border border-green-200 bg-green-50 hidden page-transition';
-                    feedbackTitle.textContent = '恭喜你！所有题目都答对了！';
-                    feedbackTitle.className = 'text-2xl font-bold mb-6 text-center text-green-600';
-                    feedbackContent.innerHTML = `
-                        <p class="text-center mb-6">你对四种植树问题的理解非常透彻，能够根据不同场景选择正确的计算方法，真棒！</p>
-                        <div class="text-center bg-white p-4 rounded-lg inline-block mx-auto">
-                            <p class="text-neutral">答题总时长：${Math.floor(studentRecords[studentRecords.length-1].duration / 60)}分${studentRecords[studentRecords.length-1].duration % 60}秒</p>
-                        </div>
-                    `;
-                    errorExercises.classList.add('hidden');
-                    
-                    document.getElementById('clapSound').play();
-                    createConfetti();
-                } else {
-                    resultFeedback.className = 'mt-10 p-6 rounded-xl border border-orange-200 bg-orange-50 hidden page-transition';
-                    feedbackTitle.textContent = `共完成4题，正确${analysisResult.totalCorrect}题，错误${4 - analysisResult.totalCorrect}题`;
-                    feedbackTitle.className = 'text-2xl font-bold mb-6 text-center text-orange-600';
-                    
-                    const errorList = document.createElement('ul');
-                    errorList.className = 'list-disc ml-6 space-y-4';
-                    
-                    analysisResult.questionResults.forEach(question => {
-                        if (!question.correct) {
-                            const li = document.createElement('li');
-                            li.className = 'p-3 border-l-4 border-red-300 bg-white rounded-r-lg';
-                            li.innerHTML = `
-                                <strong>第${question.questionNum}题（${getPlantTypeName(question.correctType)}）：</strong>
-                                <ul class="list-circle ml-6 mt-2 text-sm space-y-1">
-                                    ${question.errorReasons.map(reason => `<li>${reason}</li>`).join('')}
-                                </ul>
-                                <div class="mt-2 text-sm text-green-600">正确解法：${getCorrectFormula(question)}</div>
-                            `;
-                            errorList.appendChild(li);
-                        }
-                    });
-                    
-                    feedbackContent.appendChild(errorList);
-                    
-                    const improvementTips = document.createElement('div');
-                    improvementTips.className = 'mt-6 p-4 bg-blue-50 border border-blue-100 rounded-lg';
-                    
-                    if (analysisResult.errorPatterns.length > 0) {
-                        improvementTips.innerHTML = `
-                            <p class="font-medium mb-2">常见错误分析：</p>
-                            <ul class="list-disc ml-6 text-sm space-y-1">
-                                ${analysisResult.errorPatterns.map(pattern => `<li>${pattern}</li>`).join('')}
-                            </ul>
-                            <p class="font-medium mt-3 mb-2">正确公式总结：</p>
-                            <ul class="list-disc ml-6 text-sm mt-1 space-y-1">
-                                <li>两端都栽：棵数 = 间隔数 + 1</li>
-                                <li>一端栽一端不栽：棵数 = 间隔数</li>
-                                <li>两端都不栽：棵数 = 间隔数 - 1</li>
-                                <li>封闭环形：棵数 = 间隔数（与一端栽相同）</li>
-                            </ul>
-                            <p class="text-sm mt-2">3. 做题时先确定属于哪种类型，再选择对应的公式计算</p>
-                        `;
-                    } else {
-                        improvementTips.innerHTML = `
-                            <p class="font-medium mb-2">改进建议：</p>
-                            <p class="text-sm">1. 加强对各种植树类型的理解和区分</p>
-                            <p class="text-sm mt-1">2. 多做对比练习，掌握不同类型的计算公式</p>
-                        `;
-                    }
-                    
-                    feedbackContent.appendChild(improvementTips);
-                    
-                    generateExercises(analysisResult.mainErrorType || 'bothEnds', exercisesList);
-                    errorExercises.classList.remove('hidden');
-                }
-
-                resultFeedback.classList.remove('hidden');
-                setTimeout(() => {
-                    resultFeedback.classList.remove('opacity-0');
-                    resultFeedback.scrollIntoView({ behavior: 'smooth' });
-                }, 50);
-            }
-
-            // 获取植树类型名称
-            function getPlantTypeName(type) {
-                switch (type) {
-                    case 'bothEnds': return '两端都栽';
-                    case 'oneEnd': return '一端栽一端不栽';
-                    case 'noEnd': return '两端都不栽';
-                    case 'circle': return '封闭环形';
-                    default: return '';
-                }
-            }
-
-            // 获取正确的公式描述
-            function getCorrectFormula(question) {
-                const length = question.correctLength || selectedQuestions[question.questionNum - 1].length;
-                const interval = question.correctInterval || selectedQuestions[question.questionNum - 1].interval;
-                const count = question.correctCount || selectedQuestions[question.questionNum - 1].answer;
-                const segments = length / interval;
-                
-                switch (question.correctType) {
-                    case 'bothEnds':
-                        return `${length} ÷ ${interval} = ${segments}（间隔），${segments} + 1 = ${count}（棵）（两端都栽需加1）`;
-                    case 'oneEnd':
-                        return `${length} ÷ ${interval} = ${segments}（间隔），棵数 = 间隔数 = ${count}（棵）（一端栽无需加减）`;
-                    case 'noEnd':
-                        return `${length} ÷ ${interval} = ${segments}（间隔），${segments} - 1 = ${count}（棵）（两端都不栽需减1）`;
-                    case 'circle':
-                        return `${length} ÷ ${interval} = ${segments}（间隔），棵数 = 间隔数 = ${count}（朵）（环形栽树与一端栽相同）`;
-                }
-            }
-
-            // 生成散花效果
-            function createConfetti() {
-                const confettiCount = 200;
-                const container = document.createElement('div');
-                container.style.position = 'fixed';
-                container.style.top = '0';
-                container.style.left = '0';
-                container.style.width = '100%';
-                container.style.height = '100%';
-                container.style.pointerEvents = 'none';
-                container.style.zIndex = '1000';
-                document.body.appendChild(container);
-                
-                for (let i = 0; i < confettiCount; i++) {
-                    const confetti = document.createElement('div');
-                    const size = Math.random() * 10 + 5;
-                    
-                    confetti.style.position = 'absolute';
-                    confetti.style.width = `${size}px`;
-                    confetti.style.height = `${size}px`;
-                    confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                    confetti.style.borderRadius = '50%';
-                    confetti.style.left = `${Math.random() * 100}%`;
-                    confetti.style.top = '-10%';
-                    confetti.style.opacity = Math.random() * 0.7 + 0.3;
-                    confetti.style.animation = `confetti ${Math.random() * 3 + 2}s linear forwards`;
-                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
-                    confetti.style.animationDelay = `${Math.random() * 2}s`;
-                    
-                    container.appendChild(confetti);
-                }
-                
-                // 添加动画样式
-                const style = document.createElement('style');
-                style.textContent = `
-                    @keyframes confetti {
-                        0% { transform: translateY(0) rotate(0deg); opacity: 0.7; }
-                        100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-                    }
-                `;
-                document.head.appendChild(style);
-                
-                // 清理
-                setTimeout(() => {
-                    document.body.removeChild(container);
-                    document.head.removeChild(style);
-                }, 5000);
-            }
-
-            // 生成针对性练习
-            function generateExercises(mainType, container) {
-                const exerciseTypes = [mainType, mainType];
-                const otherTypes = ['bothEnds', 'oneEnd', 'noEnd', 'circle'].filter(type => type !== mainType);
-                exerciseTypes.push(otherTypes[Math.floor(Math.random() * otherTypes.length)]);
-
-                exerciseTypes.forEach((type, index) => {
-                    const interval = Math.floor(Math.random() * 5) + 3;
-                    const segmentCount = Math.floor(Math.random() * 7) + 4;
-                    const roadLength = interval * segmentCount;
-                    
-                    let answer, questionText;
-                    
-                    switch (type) {
-                        case 'bothEnds':
-                            answer = segmentCount + 1;
-                            questionText = `练习${index + 1}：一条${roadLength}米长的小路，在路的两旁栽树，每隔${interval}米栽一棵，两端都要栽。一共要栽多少棵树？`;
-                            break;
-                        case 'oneEnd':
-                            answer = segmentCount;
-                            questionText = `练习${index + 1}：学校有一段${roadLength}米长的围墙，要在墙边栽树，每隔${interval}米栽一棵，围墙一端已有一棵树。一共要栽多少棵树？`;
-                            break;
-                        case 'noEnd':
-                            answer = segmentCount - 1;
-                            questionText = `练习${index + 1}：一条${roadLength}米长的走廊，要在中间放盆栽，每隔${interval}米放一盆，走廊两端不放。一共要放多少盆盆栽？`;
-                            break;
-                        case 'circle':
-                            answer = segmentCount;
-                            questionText = `练习${index + 1}：一个周长为${roadLength}米的圆形花坛，要在周围栽花，每隔${interval}米栽一棵。一共要栽多少棵花？`;
-                            break;
-                    }
-                    
-                    const exerciseDiv = document.createElement('div');
-                    exerciseDiv.className = 'p-4 border border-gray-200 rounded-lg bg-white';
-                    exerciseDiv.innerHTML = `
-                        <p class="mb-3"><strong>${questionText}</strong></p>
-                        <div class="flex gap-3">
-                            <input type="text" class="exercise-answer flex-1 px-3 py-2 border border-gray-300 rounded-lg" placeholder="请输入答案">
-                            <button class="check-exercise-btn px-4 py-2 bg-primary text-white rounded-lg btn-hover text-sm">
-                                检查
-                            </button>
-                        </div>
-                        <div class="exercise-feedback mt-2 text-sm hidden"></div>
-                    `;
-                    
-                    container.appendChild(exerciseDiv);
-                    
-                    // 添加检查按钮事件
-                    const checkBtn = exerciseDiv.querySelector('.check-exercise-btn');
-                    checkBtn.addEventListener('click', function() {
-                        const answerInput = exerciseDiv.querySelector('.exercise-answer');
-                        const feedback = exerciseDiv.querySelector('.exercise-feedback');
-                        const userAnswer = parseInt(answerInput.value.trim());
-                        
-                        if (isNaN(userAnswer)) {
-                            feedback.textContent = '请输入有效的数字';
-                            feedback.className = 'exercise-feedback mt-2 text-sm text-red-500';
-                            return;
-                        }
-                        
-                        if (userAnswer === answer) {
-                            feedback.innerHTML = '<i class="fa fa-check text-green-500"></i> 回答正确！';
-                            feedback.className = 'exercise-feedback mt-2 text-sm text-green-500';
-                        } else {
-                            feedback.innerHTML = `<i class="fa fa-times text-red-500"></i> 回答错误，正确答案是${answer}${type === 'circle' ? '棵' : '棵'}`;
-                            feedback.className = 'exercise-feedback mt-2 text-sm text-red-500';
-                        }
-                    });
-                });
-            }
-
-            // 返回首页
-            function backToHome() {
+            // 学生退出按钮
+            document.getElementById('studentExitBtn').addEventListener('click', function() {
+                // 添加过渡动画
                 document.getElementById('resultFeedback').classList.add('opacity-0');
                 setTimeout(() => {
                     document.getElementById('resultFeedback').classList.add('hidden');
                     document.getElementById('resultFeedback').classList.remove('opacity-0');
-                    document.getElementById('studentHome').classList.remove('hidden');
+                    document.getElementById('questionPages').classList.add('opacity-0');
                     
-                    // 重置答题数据
-                    questionData = {};
-                    currentQuestion = 1;
-                    
-                    // 重新生成题目
-                    generateQuestionForms();
-                }, 300);
-            }
-
-            // 全屏切换
-            function toggleFullScreen() {
-                const btn = document.getElementById('fullscreenBtn');
-                
-                if (!document.fullscreenElement) {
-                    document.documentElement.requestFullscreen().catch(err => {
-                        showNotification(`全屏切换错误: ${err.message}`, 'error');
-                    });
-                    btn.innerHTML = '<i class="fa fa-compress"></i>';
-                    showNotification('已进入全屏模式', 'success');
-                } else {
-                    if (document.exitFullscreen) {
-                        document.exitFullscreen();
-                        btn.innerHTML = '<i class="fa fa-expand"></i>';
-                        showNotification('已退出全屏模式', 'info');
-                    }
-                }
-            }
-
-            // 显示通知
-            function showNotification(message, type = 'info') {
-                // 创建通知元素
-                const notification = document.createElement('div');
-                notification.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 transition-all duration-300 transform translate-x-full opacity-0`;
-                
-                // 设置样式
-                switch (type) {
-                    case 'success':
-                        notification.classList.add('bg-green-500', 'text-white');
-                        notification.innerHTML = `<i class="fa fa-check-circle mr-2"></i>${message}`;
-                        break;
-                    case 'error':
-                        notification.classList.add('bg-red-500', 'text-white');
-                        notification.innerHTML = `<i class="fa fa-times-circle mr-2"></i>${message}`;
-                        break;
-                    case 'info':
-                    default:
-                        notification.classList.add('bg-blue-500', 'text-white');
-                        notification.innerHTML = `<i class="fa fa-info-circle mr-2"></i>${message}`;
-                        break;
-                }
-                
-                // 添加到页面
-                document.body.appendChild(notification);
-                
-                // 显示动画
-                setTimeout(() => {
-                    notification.classList.remove('translate-x-full', 'opacity-0');
-                }, 10);
-                
-                // 自动消失
-                setTimeout(() => {
-                    notification.classList.add('translate-x-full', 'opacity-0');
                     setTimeout(() => {
-                        document.body.removeChild(notification);
+                        // 重置当前会话数据
+                        questionData = {
+                            1: { roadLength: '', interval: '', plantType: '', calculation: '' },
+                            2: { roadLength: '', interval: '', plantType: '', calculation: '' },
+                            3: { roadLength: '', interval: '', plantType: '', calculation: '' },
+                            4: { roadLength: '', interval: '', plantType: '', calculation: '' }
+                        };
+                        studentInfo = { name: '', className: '' };
+                        答题开始时间 = null;
+                        
+                        // 清空输入
+                        document.getElementById('studentName').value = '';
+                        document.getElementById('studentClass').value = '';
+                        
+                        // 重置界面
+                        document.getElementById('questionPages').classList.add('hidden');
+                        document.getElementById('questionPages').classList.remove('opacity-0');
+                        document.getElementById('studentHome').classList.remove('hidden');
                     }, 300);
-                }, 3000);
-            }
-
-            // 添加抖动动画
-            function addShakeAnimation(element) {
-                const style = document.createElement('style');
-                style.textContent = `
-                    @keyframes shake {
-                        0%, 100% { transform: translateX(0); }
-                        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-                        20%, 40%, 60%, 80% { transform: translateX(5px); }
-                    }
-                    @keyframes pulse {
-                        0%, 100% { opacity: 1; }
-                        50% { opacity: 0.5; }
-                    }
-                    .animate-shake {
-                        animation: shake 0.5s ease-in-out;
-                    }
-                    .animate-pulse {
-                        animation: pulse 1s ease-in-out infinite;
-                    }
-                `;
-                document.head.appendChild(style);
-                element.classList.add('animate-shake');
-                setTimeout(() => {
-                    element.classList.remove('animate-shake');
-                    document.head.removeChild(style);
-                }, 500);
-            }
-
-            // 保存记录到本地存储
-            function saveRecords() {
-                localStorage.setItem('plantingProblemRecords', JSON.stringify(studentRecords));
-            }
-
-            // 更新教师仪表盘
-            function updateTeacherDashboard() {
+                }, 300);
+            });
+            
+            // 教师端导出分析按钮
+            document.getElementById('exportAnalysisBtn').addEventListener('click', function() {
                 if (studentRecords.length === 0) {
-                    document.getElementById('totalStudents').textContent = '0';
-                    document.getElementById('fullCorrectStudents').textContent = '0';
-                    document.getElementById('averageAccuracy').textContent = '0%';
-                    document.getElementById('totalAttempts').textContent = '0';
-                    
-                    document.getElementById('rateBothEnds').textContent = '0%';
-                    document.getElementById('rateOneEnd').textContent = '0%';
-                    document.getElementById('rateNoEnd').textContent = '0%';
-                    document.getElementById('rateCircle').textContent = '0%';
-                    
-                    const classErrorStats = document.getElementById('classErrorStats');
-                    classErrorStats.innerHTML = '<tr><td colspan="4" class="px-6 py-4 border-b text-center">暂无数据</td></tr>';
-                    
-                    document.getElementById('errorReport').innerHTML = `
-                        <p class="mb-3">1. 各类型题目错误率统计：</p>
-                        <ul id="errorRateList" class="list-disc ml-6 mb-6 space-y-1">
-                            <li>两端都栽：0%（0/0人错误）</li>
-                            <li>一端栽一端不栽：0%（0/0人错误）</li>
-                            <li>两端都不栽：0%（0/0人错误）</li>
-                            <li>封闭环形曲线：0%（0/0人错误）</li>
-                        </ul>
-                        <p class="mb-3">2. 主要错误原因：暂无数据</p>
-                        <p class="mb-3">3. 教学建议：暂无数据</p>
-                        <p class="text-sm text-neutral">数据更新时间：--</p>
-                    `;
+                    showNotification('没有可导出的分析数据', 'error');
                     return;
                 }
                 
-                // 1. 整体统计
+                // 生成分析报告文本
+                let reportText = "植树问题教学分析报告\n";
+                reportText += "生成时间: " + new Date().toLocaleString() + "\n\n";
+                
+                // 添加整体统计
                 const totalStudents = new Set(studentRecords.map(r => `${r.studentInfo.name}-${r.studentInfo.className}`)).size;
                 const fullCorrectStudents = new Set(studentRecords.filter(r => r.result.allCorrect).map(r => `${r.studentInfo.name}-${r.studentInfo.className}`)).size;
                 const totalAttempts = studentRecords.length;
                 
                 let totalCorrectCount = 0;
-                let totalQuestionCount = 0;
                 studentRecords.forEach(r => {
                     totalCorrectCount += r.result.totalCorrect;
-                    totalQuestionCount += r.result.questionResults.length;
                 });
-                const averageAccuracy = Math.round((totalCorrectCount / totalQuestionCount) * 100);
+                const averageAccuracy = Math.round((totalCorrectCount / (studentRecords.length * 4)) * 100);
                 
-                document.getElementById('totalStudents').textContent = totalStudents;
-                document.getElementById('fullCorrectStudents').textContent = fullCorrectStudents;
-                document.getElementById('averageAccuracy').textContent = `${averageAccuracy}%`;
-                document.getElementById('totalAttempts').textContent = totalAttempts;
-
-                // 2. 各类型题目正确率
+                reportText += "一、整体统计\n";
+                reportText += `参与学生数: ${totalStudents}人\n`;
+                reportText += `总答题次数: ${totalAttempts}次\n`;
+                reportText += `全对人数: ${fullCorrectStudents}人\n`;
+                reportText += `平均正确率: ${averageAccuracy}%\n\n`;
+                
+                // 添加各类型题目正确率
                 const typeStats = {
                     bothEnds: { total: 0, correct: 0 },
                     oneEnd: { total: 0, correct: 0 },
                     noEnd: { total: 0, correct: 0 },
                     circle: { total: 0, correct: 0 }
                 };
-
+                
                 studentRecords.forEach(record => {
                     record.result.questionResults.forEach(q => {
                         typeStats[q.correctType].total++;
@@ -1459,71 +662,38 @@
                         }
                     });
                 });
-
-                // 更新热力图
+                
+                reportText += "二、各类型题目正确率\n";
                 for (const type in typeStats) {
                     const stats = typeStats[type];
                     const rate = stats.total === 0 ? 0 : Math.round((stats.correct / stats.total) * 100);
-                    const rateElem = document.getElementById(`rate${type.charAt(0).toUpperCase() + type.slice(1)}`);
-                    const heatElem = document.getElementById(`heat${type.charAt(0).toUpperCase() + type.slice(1)}`);
-
-                    rateElem.textContent = `${rate}%`;
-                    
-                    // 设置热力图颜色
-                    let colorClass = '';
-                    if (rate >= 80) colorClass = 'bg-green-100 border-green-200 text-green-800';
-                    else if (rate >= 60) colorClass = 'bg-yellow-100 border-yellow-200 text-yellow-800';
-                    else if (rate >= 40) colorClass = 'bg-orange-100 border-orange-200 text-orange-800';
-                    else colorClass = 'bg-red-100 border-red-200 text-red-800';
-                    
-                    heatElem.className = `p-5 rounded-xl text-center ${colorClass}`;
+                    reportText += `${getPlantTypeName(type)}: ${rate}% (${stats.correct}/${stats.total}正确)\n`;
                 }
+                reportText += "\n";
                 
-                // 3. 班级统计
+                // 添加班级统计
+                reportText += "三、班级统计\n";
+                reportText += "班级\t总人数\t全对人数\t错误率最高类型\n";
+                
                 const classStats = {};
                 studentRecords.forEach(record => {
                     const className = record.studentInfo.className;
                     if (!classStats[className]) {
                         classStats[className] = {
-                            totalStudents: 0,
+                            totalStudents: new Set(),
                             fullCorrect: 0,
-                            students: new Set(),
                             errorTypes: {}
                         };
                     }
+                    classStats[className].totalStudents.add(record.studentInfo.name);
                     
-                    // 添加学生
-                    const studentId = `${record.studentInfo.name}-${className}`;
-                    if (!classStats[className].students.has(studentId)) {
-                        classStats[className].students.add(studentId);
-                        classStats[className].totalStudents = classStats[className].students.size;
-                    }
-                    
-                    // 全对统计
-                    if (record.result.allCorrect && !classStats[className].fullCorrectStudents.has(studentId)) {
-                        if (!classStats[className].fullCorrectStudents) {
-                            classStats[className].fullCorrectStudents = new Set();
-                        }
-                        classStats[className].fullCorrectStudents.add(studentId);
-                        classStats[className].fullCorrect = classStats[className].fullCorrectStudents.size;
+                    if (record.result.allCorrect) {
+                        classStats[className].fullCorrect++;
                     }
                 });
-                
-                // 错误类型统计
-                studentRecords.forEach(record => {
-                    const className = record.studentInfo.className;
-                    record.result.questionResults.forEach(q => {
-                        if (!q.correct) {
-                            classStats[className].errorTypes[q.correctType] = (classStats[className].errorTypes[q.correctType] || 0) + 1;
-                        }
-                    });
-                });
-
-                // 更新班级统计表格
-                const classErrorStats = document.getElementById('classErrorStats');
-                classErrorStats.innerHTML = '';
                 
                 Object.entries(classStats).forEach(([className, stats]) => {
+                    // 找出错误率最高的类型
                     let maxErrorType = '';
                     let maxCount = 0;
                     Object.entries(stats.errorTypes).forEach(([type, count]) => {
@@ -1532,142 +702,937 @@
                             maxErrorType = type;
                         }
                     });
-
-                    const row = document.createElement('tr');
-                    row.className = 'bg-white hover:bg-light/50 transition-colors';
-                    row.innerHTML = `
-                        <td class="px-6 py-4 border-b">${className}</td>
-                        <td class="px-6 py-4 border-b">${stats.totalStudents}</td>
-                        <td class="px-6 py-4 border-b">${stats.fullCorrect || 0}</td>
-                        <td class="px-6 py-4 border-b">${maxErrorType ? getPlantTypeName(maxErrorType) : '无'}</td>
-                    `;
-                    classErrorStats.appendChild(row);
-                });
-                
-                // 4. 更新错误分析报告
-                const errorRateList = document.getElementById('errorRateList');
-                errorRateList.innerHTML = '';
-                
-                for (const type in typeStats) {
-                    const stats = typeStats[type];
-                    const errorCount = stats.total - stats.correct;
-                    const errorRate = stats.total === 0 ? 0 : Math.round((errorCount / stats.total) * 100);
                     
-                    const li = document.createElement('li');
-                    li.textContent = `${getPlantTypeName(type)}：${errorRate}%（${errorCount}/${stats.total}人错误）`;
-                    errorRateList.appendChild(li);
-                }
+                    reportText += `${className}\t${stats.totalStudents.size}\t${stats.fullCorrect}\t${maxErrorType ? getPlantTypeName(maxErrorType) : '无'}\n`;
+                });
+                reportText += "\n";
                 
-                // 分析主要错误原因
+                // 添加错误分析
+                reportText += "四、错误分析\n";
+                
+                // 汇总所有学生的错误模式
                 const allErrorPatterns = [];
                 studentRecords.forEach(record => {
-                    allErrorPatterns.push(...record.result.errorPatterns);
+                    if (record.result.errorPatterns && record.result.errorPatterns.length > 0) {
+                        allErrorPatterns.push(...record.result.errorPatterns);
+                    }
                 });
                 
-                let mainErrorReason = "暂无数据";
                 if (allErrorPatterns.length > 0) {
                     const reasonCount = {};
                     allErrorPatterns.forEach(reason => {
                         reasonCount[reason] = (reasonCount[reason] || 0) + 1;
                     });
-                    const maxReason = Object.entries(reasonCount).sort((a, b) => b[1] - a[1])[0];
-                    mainErrorReason = `“${maxReason[0]}”（出现${maxReason[1]}次，占${Math.round((maxReason[1]/allErrorPatterns.length)*100)}%）`;
-                }
-
-                // 找出错误率最高的类型
-                let maxErrorType = 'bothEnds';
-                let maxErrorRate = 0;
-                for (const type in typeStats) {
-                    const errorRate = typeStats[type].total === 0 ? 0 : (typeStats[type].total - typeStats[type].correct) / typeStats[type].total;
-                    if (errorRate > maxErrorRate) {
-                        maxErrorRate = errorRate;
-                        maxErrorType = type;
-                    }
-                }
-
-                // 更新报告
-                document.getElementById('errorReport').innerHTML = `
-                    <p class="mb-3">1. 各类型题目错误率统计：</p>
-                    <ul id="errorRateList" class="list-disc ml-6 mb-6 space-y-1">
-                        ${Array.from(errorRateList.children).map(li => li.outerHTML).join('')}
-                    </ul>
-                    <p class="mb-3">2. 主要错误原因：${mainErrorReason}</p>
-                    <p class="mb-3">3. 教学建议：重点强化<strong>${getPlantTypeName(maxErrorType)}</strong>类型的教学，通过实物演示或画图方式帮助学生理解不同类型的区别，针对${mainErrorReason}设计专项对比练习。</p>
-                    <p class="text-sm text-neutral">数据更新时间：${new Date().toLocaleString()}</p>
-                `;
-            }
-
-            // 导出分析报告
-            function exportAnalysisReport() {
-                if (studentRecords.length === 0) {
-                    showNotification('没有可导出的分析数据', 'error');
-                    return;
-                }
-                
-                let reportText = "植树问题教学分析报告\n";
-                reportText += "生成时间: " + new Date().toLocaleString() + "\n\n";
-                
-                const totalStudents = new Set(studentRecords.map(r => `${r.studentInfo.name}-${r.studentInfo.className}`)).size;
-                const fullCorrectStudents = new Set(studentRecords.filter(r => r.result.allCorrect).map(r => `${r.studentInfo.name}-${r.studentInfo.className}`)).size;
-                const totalAttempts = studentRecords.length;
-                
-                let totalCorrectCount = 0;
-                let totalQuestionCount = 0;
-                studentRecords.forEach(r => {
-                    totalCorrectCount += r.result.totalCorrect;
-                    totalQuestionCount += r.result.questionResults.length;
-                });
-                const averageAccuracy = Math.round((totalCorrectCount / totalQuestionCount) * 100);
-                
-                reportText += "一、整体统计\n";
-                reportText += `1. 参与人数: ${totalStudents}人\n`;
-                reportText += `2. 全对人数: ${fullCorrectStudents}人\n`;
-                reportText += `3. 平均正确率: ${averageAccuracy}%\n`;
-                reportText += `4. 总答题次数: ${totalAttempts}次\n\n`;
-                
-                reportText += "二、各类型题目正确率\n";
-                const typeStats = {
-                    bothEnds: { total: 0, correct: 0 },
-                    oneEnd: { total: 0, correct: 0 },
-                    noEnd: { total: 0, correct: 0 },
-                    circle: { total: 0, correct: 0 }
-                };
-
-                studentRecords.forEach(record => {
-                    record.result.questionResults.forEach(q => {
-                        typeStats[q.correctType].total++;
-                        if (q.correct) {
-                            typeStats[q.correctType].correct++;
-                        }
+                    
+                    const sortedReasons = Object.entries(reasonCount).sort((a, b) => b[1] - a[1]);
+                    reportText += "主要错误原因:\n";
+                    sortedReasons.forEach(([reason, count]) => {
+                        reportText += `- ${reason}: ${count}次\n`;
                     });
-                });
-                
-                for (const type in typeStats) {
-                    const stats = typeStats[type];
-                    const rate = stats.total === 0 ? 0 : Math.round((stats.correct / stats.total) * 100);
-                    reportText += `${getPlantTypeName(type)}: ${rate}% (${stats.correct}/${stats.total})\n`;
+                } else {
+                    reportText += "主要错误原因: 暂无错误数据\n";
                 }
                 
-                reportText += "\n三、错误分析\n";
-                reportText += document.getElementById('errorReport').innerText.replace(/\s+/g, ' ').replace('1. 各类型题目错误率统计：', '1. 各类型题目错误率统计：\n')
-                    .replace('2. 主要错误原因：', '\n2. 主要错误原因：')
-                    .replace('3. 教学建议：', '\n3. 教学建议：')
-                    .replace('数据更新时间：', '\n数据更新时间：');
-                
-                // 创建下载链接
+                // 创建并下载文件
                 const blob = new Blob([reportText], { type: 'text/plain' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `植树问题分析报告_${new Date().toLocaleDateString()}.txt`;
+                a.download = `植树问题分析报告_${new Date().toLocaleDateString().replace(/\//g, '-')}.txt`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
                 
-                showNotification('分析报告已导出', 'success');
+                showNotification('分析报告已成功导出', 'success');
+            });
+            
+            // 教师端清空数据按钮
+            document.getElementById('clearDataBtn').addEventListener('click', function() {
+                if (confirm('确定要清空所有学生答题数据吗？此操作不可恢复！')) {
+                    // 清空数据
+                    studentRecords = [];
+                    localStorage.removeItem('plantingProblemRecords');
+                    
+                    // 更新仪表盘
+                    updateTeacherDashboard();
+                    
+                    showNotification('所有数据已成功清空', 'success');
+                }
+            });
+            
+            // 教师端退出按钮
+            document.getElementById('teacherExitBtn').addEventListener('click', function() {
+                document.getElementById('teacherInterface').classList.add('hidden');
+                document.getElementById('studentInterface').classList.remove('hidden');
+                updateRoleBtnStyles('student');
+            });
+        });
+
+        // 保存当前题目的数据
+        function saveCurrentQuestionData() {
+            const questionPage = document.querySelector(`.question-page[data-question="${currentQuestion}"]`);
+            
+            questionData[currentQuestion] = {
+                roadLength: questionPage.querySelector('.road-length-input').value,
+                interval: questionPage.querySelector('.interval-input').value,
+                plantType: questionPage.querySelector('input[name="plantType"]:checked')?.value || '',
+                calculation: questionPage.querySelector('.calculation-input').value
+            };
+        }
+
+        // 加载指定题目的数据
+        function loadQuestionData(questionNum) {
+            const questionPage = document.querySelector(`.question-page[data-question="${questionNum}"]`);
+            const data = questionData[questionNum];
+            
+            questionPage.querySelector('.road-length-input').value = data.roadLength;
+            questionPage.querySelector('.interval-input').value = data.interval;
+            
+            // 清除所有选中状态
+            questionPage.querySelectorAll('input[name="plantType"]').forEach(radio => {
+                radio.checked = false;
+            });
+            
+            // 设置选中状态
+            if (data.plantType) {
+                const radio = questionPage.querySelector(`input[name="plantType"][value="${data.plantType}"]`);
+                if (radio) radio.checked = true;
             }
-        </script>
-    </div>
+            
+            questionPage.querySelector('.calculation-input').value = data.calculation;
+        }
+
+        // 设置当前激活的题目
+        function setActiveQuestion(questionNum) {
+            // 隐藏所有题目
+            document.querySelectorAll('.question-page').forEach(page => {
+                page.classList.add('hidden');
+            });
+            
+            // 显示指定题目
+            document.querySelector(`.question-page[data-question="${questionNum}"]`).classList.remove('hidden');
+            
+            // 更新当前题目索引
+            currentQuestion = questionNum;
+            
+            // 加载题目数据
+            loadQuestionData(questionNum);
+            
+            // 更新导航按钮样式
+            document.querySelectorAll('.question-nav-btn').forEach(btn => {
+                const btnQuestion = parseInt(btn.getAttribute('data-question'));
+                if (btnQuestion === questionNum) {
+                    btn.classList.add('border-primary', 'bg-primary/10', 'text-primary');
+                } else {
+                    btn.classList.remove('border-primary', 'bg-primary/10', 'text-primary');
+                }
+            });
+            
+            // 为当前题目的绘制按钮添加事件监听
+            setupDrawButton(questionNum);
+        }
+
+        // 设置绘制按钮功能
+        function setupDrawButton(questionNum) {
+            const questionPage = document.querySelector(`.question-page[data-question="${questionNum}"]`);
+            const drawBtn = questionPage.querySelector('.draw-btn');
+            const canvas = questionPage.querySelector('.plant-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // 先移除可能存在的事件监听（避免重复绑定）
+            const newDrawBtn = drawBtn.cloneNode(true);
+            drawBtn.parentNode.replaceChild(newDrawBtn, drawBtn);
+            
+            // 重新添加事件监听
+            newDrawBtn.addEventListener('click', function() {
+                const roadLength = parseFloat(questionPage.querySelector('.road-length-input').value) || 0;
+                const interval = parseFloat(questionPage.querySelector('.interval-input').value) || 0;
+                const plantType = questionPage.querySelector('input[name="plantType"]:checked')?.value;
+                
+                if (!roadLength || !interval || !plantType) {
+                    showNotification('请先填写小路长度、间隔距离并选择栽树类型', 'error');
+                    return;
+                }
+                
+                // 清空画布
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // 绘制示意图
+                drawPlantingDiagram(ctx, canvas, roadLength, interval, plantType);
+            });
+        }
+
+        // 绘制植树示意图
+        function drawPlantingDiagram(ctx, canvas, roadLength, interval, plantType) {
+            // 计算缩放比例，确保能在画布上显示完整
+            const maxWidth = canvas.width - 100; // 留边距
+            const scale = maxWidth / Math.max(roadLength, 1); // 防止为0
+            
+            // 绘制地面/路径
+            ctx.fillStyle = '#E0E0E0';
+            ctx.fillRect(50, canvas.height - 80, maxWidth, 20);
+            
+            // 计算树的数量
+            let treeCount;
+            switch (plantType) {
+                case 'bothEnds':
+                    treeCount = Math.floor(roadLength / interval) + 1;
+                    break;
+                case 'oneEnd':
+                    treeCount = Math.floor(roadLength / interval);
+                    break;
+                case 'noEnd':
+                    treeCount = Math.max(0, Math.floor(roadLength / interval) - 1);
+                    break;
+                case 'circle':
+                    treeCount = Math.floor(roadLength / interval);
+                    break;
+            }
+            
+            // 绘制树
+            ctx.fillStyle = '#8B4513'; // 树干颜色
+            ctx.fillStyle = '#228B22'; // 树叶颜色
+            
+            if (plantType === 'circle') {
+                // 绘制圆形花坛
+                const radius = (maxWidth / 2) * 0.8;
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+                
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                ctx.fillStyle = '#E0E0E0';
+                ctx.fill();
+                ctx.strokeStyle = '#AAAAAA';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // 在圆形上绘制树
+                for (let i = 0; i < treeCount; i++) {
+                    const angle = (i / treeCount) * Math.PI * 2;
+                    const x = centerX + radius * Math.cos(angle);
+                    const y = centerY + radius * Math.sin(angle);
+                    
+                    // 绘制树干
+                    ctx.fillStyle = '#8B4513';
+                    ctx.fillRect(x - 5, y - 10, 10, 20);
+                    
+                    // 绘制树叶
+                    ctx.fillStyle = '#228B22';
+                    ctx.beginPath();
+                    ctx.arc(x, y - 15, 15, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
+                // 标记圆形周长
+                ctx.fillStyle = '#333333';
+                ctx.font = '14px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(`周长: ${roadLength}m`, centerX, centerY);
+            } else {
+                // 绘制直线道路上的树
+                for (let i = 0; i < treeCount; i++) {
+                    // 根据栽树类型调整位置
+                    let positionFactor;
+                    if (plantType === 'bothEnds' || plantType === 'oneEnd') {
+                        positionFactor = i;
+                    } else { // noEnd
+                        positionFactor = i + 1;
+                    }
+                    
+                    const x = 50 + positionFactor * interval * scale;
+                    
+                    // 绘制树干
+                    ctx.fillStyle = '#8B4513';
+                    ctx.fillRect(x - 5, canvas.height - 100, 10, 40);
+                    
+                    // 绘制树叶
+                    ctx.fillStyle = '#228B22';
+                    ctx.beginPath();
+                    ctx.arc(x, canvas.height - 115, 15, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
+                // 绘制距离标记
+                ctx.fillStyle = '#333333';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                
+                // 起点标记
+                if (plantType === 'bothEnds' || plantType === 'oneEnd') {
+                    ctx.fillText('起点', 50, canvas.height - 120);
+                }
+                
+                // 终点标记
+                if (plantType === 'bothEnds' || plantType === 'noEnd') {
+                    ctx.fillText('终点', 50 + roadLength * scale, canvas.height - 120);
+                }
+                
+                // 长度标记
+                ctx.fillText(`${roadLength}m`, 50 + (roadLength * scale) / 2, canvas.height - 140);
+                
+                // 间隔标记
+                if (interval * scale > 50 && treeCount > 1) { // 确保间隔足够大才显示
+                    ctx.fillText(`${interval}m`, 50 + (interval * scale) / 2, canvas.height - 60);
+                    
+                    // 绘制间隔线
+                    ctx.strokeStyle = '#AAAAAA';
+                    ctx.beginPath();
+                    ctx.moveTo(50, canvas.height - 70);
+                    ctx.lineTo(50 + interval * scale, canvas.height - 70);
+                    ctx.stroke();
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(50, canvas.height - 65);
+                    ctx.lineTo(50, canvas.height - 75);
+                    ctx.stroke();
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(50 + interval * scale, canvas.height - 65);
+                    ctx.lineTo(50 + interval * scale, canvas.height - 75);
+                    ctx.stroke();
+                }
+            }
+            
+            // 显示树的数量
+            ctx.fillStyle = '#333333';
+            ctx.font = '16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(`共${treeCount}棵树`, canvas.width / 2, 30);
+        }
+
+        // 分析答题结果
+        function analyzeAnswers(questionsData) {
+            const questionResults = [];
+            const errorPatterns = [];
+            let totalCorrect = 0;
+            
+            questionsData.forEach((data, index) => {
+                const questionNum = index + 1;
+                let correct = true;
+                const errorReasons = [];
+                
+                // 检查长度是否正确
+                if (parseFloat(data.roadLength) !== data.correctLength) {
+                    correct = false;
+                    errorReasons.push(`小路/花坛长度错误（正确应为${data.correctLength}m）`);
+                }
+                
+                // 检查间隔是否正确
+                if (parseFloat(data.interval) !== data.correctInterval) {
+                    correct = false;
+                    errorReasons.push(`间隔距离错误（正确应为${data.correctInterval}m）`);
+                }
+                
+                // 检查栽树类型是否正确
+                if (data.plantType !== data.correctType) {
+                    correct = false;
+                    errorReasons.push(`栽树类型判断错误（正确应为${getPlantTypeName(data.correctType)}）`);
+                    
+                    // 添加错误模式分析
+                    errorPatterns.push(`对${getPlantTypeName(data.correctType)}类型判断错误`);
+                }
+                
+                // 检查计算结果是否正确
+                const resultMatch = data.calculation.includes(data.correctCount.toString());
+                if (!resultMatch) {
+                    correct = false;
+                    errorReasons.push(`计算结果错误（正确结果应为${data.correctCount}棵）`);
+                    
+                    // 添加错误模式分析
+                    if (data.plantType === data.correctType) {
+                        // 类型正确但计算错误
+                        errorPatterns.push(`${getPlantTypeName(data.correctType)}类型计算错误`);
+                    }
+                }
+                
+                if (correct) {
+                    totalCorrect++;
+                }
+                
+                questionResults.push({
+                    questionNum,
+                    correct,
+                    errorReasons,
+                    correctLength: data.correctLength,
+                    correctInterval: data.correctInterval,
+                    correctType: data.correctType,
+                    correctCount: data.correctCount
+                });
+            });
+            
+            return {
+                allCorrect: totalCorrect === 4,
+                totalCorrect,
+                questionResults,
+                errorPatterns
+            };
+        }
+
+        // 显示结果反馈
+        function showResultFeedback(analysisResult) {
+            const resultFeedback = document.getElementById('resultFeedback');
+            const feedbackTitle = document.getElementById('feedbackTitle');
+            const feedbackContent = document.getElementById('feedbackContent');
+            const errorExercises = document.getElementById('errorExercises');
+            const exercisesList = document.querySelector('.exercises-list');
+
+            // 清空之前的内容
+            feedbackContent.innerHTML = '';
+            exercisesList.innerHTML = '';
+
+            if (analysisResult.allCorrect) {
+                // 全对
+                resultFeedback.className = 'mt-10 p-6 rounded-xl border border-green-200 bg-green-50 hidden page-transition';
+                feedbackTitle.textContent = '恭喜你！所有题目都答对了！';
+                feedbackTitle.className = 'text-2xl font-bold mb-6 text-center text-green-600';
+                feedbackContent.innerHTML = `
+                    <p class="text-center mb-6">你对四种植树问题的理解非常透彻，能够根据不同场景选择正确的计算方法，真棒！</p>
+                    <div class="text-center bg-white p-4 rounded-lg inline-block mx-auto">
+                        <p class="text-neutral">答题总时长：${Math.floor(studentRecords[studentRecords.length-1].duration / 60)}分${studentRecords[studentRecords.length-1].duration % 60}秒</p>
+                    </div>
+                `;
+                errorExercises.classList.add('hidden');
+                
+                // 播放音效和散花
+                document.getElementById('clapSound').play();
+                createConfetti();
+            } else {
+                // 有错
+                resultFeedback.className = 'mt-10 p-6 rounded-xl border border-orange-200 bg-orange-50 hidden page-transition';
+                feedbackTitle.textContent = `共完成4题，正确${analysisResult.totalCorrect}题，错误${4 - analysisResult.totalCorrect}题`;
+                feedbackTitle.className = 'text-2xl font-bold mb-6 text-center text-orange-600';
+                
+                // 生成错误题目列表
+                const errorList = document.createElement('ul');
+                errorList.className = 'list-disc ml-6 space-y-4';
+                
+                analysisResult.questionResults.forEach(question => {
+                    if (!question.correct) {
+                        const li = document.createElement('li');
+                        li.className = 'p-3 border-l-4 border-red-300 bg-white rounded-r-lg';
+                        li.innerHTML = `
+                            <strong>第${question.questionNum}题（${getPlantTypeName(question.correctType)}）：</strong>
+                            <ul class="list-circle ml-6 mt-2 text-sm space-y-1">
+                                ${question.errorReasons.map(reason => `<li>${reason}</li>`).join('')}
+                            </ul>
+                            <div class="mt-2 text-sm text-green-600">正确解法：${getCorrectFormula(question)}</div>
+                        `;
+                        errorList.appendChild(li);
+                    }
+                });
+                
+                feedbackContent.appendChild(errorList);
+                
+                // 生成综合错误模式分析
+                if (analysisResult.errorPatterns.length > 0) {
+                    const patternAnalysis = document.createElement('div');
+                    patternAnalysis.className = 'mt-6 p-4 bg-white rounded-lg';
+                    patternAnalysis.innerHTML = `
+                        <p class="font-medium mb-3">综合错误分析：</p>
+                        <ul class="list-disc ml-6 text-sm space-y-2">
+                            ${analysisResult.errorPatterns.map(pattern => `<li>${pattern}</li>`).join('')}
+                        </ul>
+                    `;
+                    feedbackContent.appendChild(patternAnalysis);
+                }
+                
+                // 生成改进建议
+                const improvementTips = document.createElement('div');
+                improvementTips.className = 'mt-6 p-4 bg-blue-50 rounded-lg border border-blue-100';
+                
+                if (analysisResult.errorPatterns.length > 0) {
+                    // 找出最常见的错误类型
+                    const errorTypeCount = {};
+                    analysisResult.questionResults.forEach(q => {
+                        if (!q.correct) {
+                            errorTypeCount[q.correctType] = (errorTypeCount[q.correctType] || 0) + 1;
+                        }
+                    });
+                    
+                    const mainErrorType = Object.entries(errorTypeCount).sort((a, b) => b[1] - a[1])[0][0];
+                    
+                    improvementTips.innerHTML = `
+                        <p class="font-medium mb-2">改进建议：</p>
+                        <p class="text-sm">1. 重点理解<strong>${getPlantTypeName(mainErrorType)}</strong>类型的特点和计算方法</p>
+                        <p class="text-sm mt-1">2. 记住不同类型的核心区别：</p>
+                        <ul class="list-disc ml-6 text-sm mt-1 space-y-1">
+                            <li>两端都栽：棵数 = 间隔数 + 1</li>
+                            <li>一端栽一端不栽：棵数 = 间隔数</li>
+                            <li>两端都不栽：棵数 = 间隔数 - 1</li>
+                            <li>封闭环形：棵数 = 间隔数（与一端栽相同）</li>
+                        </ul>
+                    `;
+                } else {
+                    improvementTips.innerHTML = `
+                        <p class="font-medium mb-2">改进建议：</p>
+                        <p class="text-sm">仔细检查题目条件，确保计算过程的准确性。</p>
+                    `;
+                }
+                
+                feedbackContent.appendChild(improvementTips);
+                
+                // 显示针对性练习
+                errorExercises.classList.remove('hidden');
+                
+                // 生成3道针对性练习（根据错误类型）
+                generateErrorExercises(exercisesList, analysisResult);
+            }
+            
+            // 显示结果反馈（带动画）
+            resultFeedback.classList.remove('hidden');
+            setTimeout(() => {
+                resultFeedback.classList.remove('opacity-0');
+            }, 50);
+            
+            // 滚动到反馈区域
+            resultFeedback.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 获取正确的公式描述（修复乱码问题，使用标准符号）
+        function getCorrectFormula(question) {
+            const length = question.correctLength;
+            const interval = question.correctInterval;
+            const count = question.correctCount;
+            const segments = length / interval;
+            
+            // 使用标准数学符号，避免特殊字符导致的乱码
+            switch (question.correctType) {
+                case 'bothEnds':
+                    return `${length} ÷ ${interval} = ${segments}（间隔），${segments} + 1 = ${count}（棵）（两端都栽需加1）`;
+                case 'oneEnd':
+                    return `${length} ÷ ${interval} = ${segments}（间隔），棵数 = 间隔数 = ${count}（棵）（一端栽无需加减）`;
+                case 'noEnd':
+                    return `${length} ÷ ${interval} = ${segments}（间隔），${segments} - 1 = ${count}（棵）（两端都不栽需减1）`;
+                case 'circle':
+                    return `${length} ÷ ${interval} = ${segments}（间隔），棵数 = 间隔数 = ${count}（朵）（环形栽树与一端栽相同）`;
+            }
+        }
+
+        // 生成散花效果
+        function createConfetti() {
+            const confettiCount = 200;
+            const colors = ['#ff4d4d', '#4dff4d', '#4d4dff', '#ffff4d', '#ff4dff', '#4dffff'];
+
+            for (let i = 0; i < confettiCount; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'fixed pointer-events-none';
+                confetti.style.width = `${Math.random() * 10 + 5}px`;
+                confetti.style.height = `${Math.random() * 5 + 2}px`;
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.top = '-10px';
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                confetti.style.opacity = Math.random() * 0.8 + 0.2;
+                confetti.style.animation = `fall ${Math.random() * 3 + 2}s linear forwards`;
+                document.body.appendChild(confetti);
+
+                // 动画结束后移除
+                setTimeout(() => confetti.remove(), 5000);
+            }
+
+            // 添加下落动画样式
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fall {
+                    to {
+                        transform: translateY(${window.innerHeight + 20}px) rotate(${Math.random() * 720}deg);
+                        opacity: 0;
+                    }
+                }
+                @keyframes shake {
+                    0%, 100% { transform: translateX(0); }
+                    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+                    20%, 40%, 60%, 80% { transform: translateX(5px); }
+                }
+                .animate-shake {
+                    animation: shake 0.5s ease-in-out;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // 生成针对性练习
+        function generateErrorExercises(container, analysisResult) {
+            // 找出错误的题型
+            const errorTypes = new Set();
+            analysisResult.questionResults.forEach(q => {
+                if (!q.correct) {
+                    errorTypes.add(q.correctType);
+                }
+            });
+            
+            // 如果错误题型不足3种，补充其他题型
+            const allTypes = ['bothEnds', 'oneEnd', 'noEnd', 'circle'];
+            while (errorTypes.size < 3) {
+                const randomType = allTypes[Math.floor(Math.random() * allTypes.length)];
+                errorTypes.add(randomType);
+            }
+            
+            // 为每种错误题型生成一道练习
+            Array.from(errorTypes).forEach(type => {
+                const lengths = [15, 24, 30, 42, 56, 63, 72, 88, 95];
+                const intervals = [3, 4, 5, 6, 7, 8, 9];
+                
+                const length = lengths[Math.floor(Math.random() * lengths.length)];
+                const interval = intervals[Math.floor(Math.random() * intervals.length)];
+                let count, questionText;
+                
+                switch (type) {
+                    case 'bothEnds':
+                        count = Math.floor(length / interval) + 1;
+                        questionText = `在一条${length}m长的小路一旁栽树，每隔${interval}m栽一棵，两端都栽。一共要栽多少棵树？`;
+                        break;
+                    case 'oneEnd':
+                        count = Math.floor(length / interval);
+                        questionText = `在一条${length}m长的小路一旁栽树，每隔${interval}m栽一棵，一端栽树另一端不栽。一共要栽多少棵树？`;
+                        break;
+                    case 'noEnd':
+                        count = Math.floor(length / interval) - 1;
+                        questionText = `在一条${length}m长的小路一旁栽树，每隔${interval}m栽一棵，两端都不栽。一共要栽多少棵树？`;
+                        break;
+                    case 'circle':
+                        count = Math.floor(length / interval);
+                        questionText = `在一个周长为${length}m的圆形花坛周围栽花，每隔${interval}m栽一株。一共要栽多少株花？`;
+                        break;
+                }
+                
+                const exercise = document.createElement('div');
+                exercise.className = 'p-4 bg-white rounded-lg border border-gray-200';
+                exercise.innerHTML = `
+                    <p class="mb-3"><strong>${getPlantTypeName(type)}：</strong>${questionText}</p>
+                    <button class="show-answer-btn px-4 py-1 bg-gray-100 text-dark rounded text-sm">查看答案</button>
+                    <div class="answer mt-3 text-green-600 hidden">
+                        答案：${count}棵（解析：${length} ÷ ${interval} = ${length / interval}个间隔，${getCalculationRule(type)}）
+                    </div>
+                `;
+                
+                container.appendChild(exercise);
+                
+                // 添加查看答案功能
+                exercise.querySelector('.show-answer-btn').addEventListener('click', function() {
+                    const answerDiv = this.nextElementSibling;
+                    answerDiv.classList.toggle('hidden');
+                    this.textContent = answerDiv.classList.contains('hidden') ? '查看答案' : '隐藏答案';
+                });
+            });
+        }
+
+        // 获取计算规则描述
+        function getCalculationRule(type) {
+            switch (type) {
+                case 'bothEnds': return '两端都栽，棵数 = 间隔数 + 1';
+                case 'oneEnd': return '一端栽一端不栽，棵数 = 间隔数';
+                case 'noEnd': return '两端都不栽，棵数 = 间隔数 - 1';
+                case 'circle': return '封闭环形，棵数 = 间隔数';
+            }
+        }
+
+        // 获取栽树类型名称
+        function getPlantTypeName(type) {
+            switch (type) {
+                case 'bothEnds': return '两端都栽';
+                case 'oneEnd': return '一端栽一端不栽';
+                case 'noEnd': return '两端都不栽';
+                case 'circle': return '封闭环形曲线';
+                default: return '';
+            }
+        }
+
+        // 保存记录到localStorage
+        function saveRecords() {
+            localStorage.setItem('plantingProblemRecords', JSON.stringify(studentRecords));
+        }
+
+        // 更新教师仪表盘
+        function updateTeacherDashboard() {
+            if (studentRecords.length === 0) {
+                // 清空数据时的显示
+                document.getElementById('totalStudents').textContent = '0';
+                document.getElementById('fullCorrectStudents').textContent = '0';
+                document.getElementById('averageAccuracy').textContent = '0%';
+                document.getElementById('totalAttempts').textContent = '0';
+                
+                // 重置热力图
+                document.getElementById('rateBothEnds').textContent = '0%';
+                document.getElementById('rateOneEnd').textContent = '0%';
+                document.getElementById('rateNoEnd').textContent = '0%';
+                document.getElementById('rateCircle').textContent = '0%';
+                
+                // 重置表格
+                const classErrorStats = document.getElementById('classErrorStats');
+                classErrorStats.innerHTML = '<tr><td colspan="4" class="px-6 py-4 border-b text-center">暂无数据</td></tr>';
+                
+                // 重置报告
+                document.getElementById('errorReport').innerHTML = `
+                    <p class="mb-3">1. 各类型题目错误率统计：</p>
+                    <ul id="errorRateList" class="list-disc ml-6 mb-6 space-y-1">
+                        <li>两端都栽：0%（0/0人错误）</li>
+                        <li>一端栽一端不栽：0%（0/0人错误）</li>
+                        <li>两端都不栽：0%（0/0人错误）</li>
+                        <li>封闭环形曲线：0%（0/0人错误）</li>
+                    </ul>
+                    <p class="mb-3">2. 主要错误原因：暂无数据</p>
+                    <p class="mb-3">3. 教学建议：暂无数据</p>
+                    <p class="text-sm text-neutral">数据更新时间：${new Date().toLocaleString()}</p>
+                `;
+                return;
+            }
+
+            // 1. 整体统计
+            const totalStudents = new Set(studentRecords.map(r => `${r.studentInfo.name}-${r.studentInfo.className}`)).size;
+            const fullCorrectStudents = new Set(studentRecords.filter(r => r.result.allCorrect).map(r => `${r.studentInfo.name}-${r.studentInfo.className}`)).size;
+            const totalAttempts = studentRecords.length;
+            
+            // 计算平均正确率
+            let totalCorrectCount = 0;
+            studentRecords.forEach(r => {
+                totalCorrectCount += r.result.totalCorrect;
+            });
+            const averageAccuracy = Math.round((totalCorrectCount / (studentRecords.length * 4)) * 100);
+
+            document.getElementById('totalStudents').textContent = totalStudents;
+            document.getElementById('fullCorrectStudents').textContent = fullCorrectStudents;
+            document.getElementById('averageAccuracy').textContent = `${averageAccuracy}%`;
+            document.getElementById('totalAttempts').textContent = totalAttempts;
+
+            // 2. 各类型题目正确率
+            const typeStats = {
+                bothEnds: { total: 0, correct: 0 },
+                oneEnd: { total: 0, correct: 0 },
+                noEnd: { total: 0, correct: 0 },
+                circle: { total: 0, correct: 0 }
+            };
+
+            studentRecords.forEach(record => {
+                record.result.questionResults.forEach(q => {
+                    typeStats[q.correctType].total++;
+                    if (q.correct) {
+                        typeStats[q.correctType].correct++;
+                    }
+                });
+            });
+
+            // 更新热力图
+            for (const type in typeStats) {
+                const stats = typeStats[type];
+                const rate = stats.total === 0 ? 0 : Math.round((stats.correct / stats.total) * 100);
+                const rateElem = document.getElementById(`rate${type.charAt(0).toUpperCase() + type.slice(1)}`);
+                const heatElem = document.getElementById(`heat${type.charAt(0).toUpperCase() + type.slice(1)}`);
+
+                rateElem.textContent = `${rate}%`;
+                
+                // 热力图颜色（红色=低正确率，绿色=高正确率）
+                let colorClass = '';
+                if (rate >= 80) {
+                    colorClass = 'bg-green-100 text-green-800 border-green-200';
+                } else if (rate >= 60) {
+                    colorClass = 'bg-yellow-100 text-yellow-800 border-yellow-200';
+                } else if (rate >= 40) {
+                    colorClass = 'bg-orange-100 text-orange-800 border-orange-200';
+                } else {
+                    colorClass = 'bg-red-100 text-red-800 border-red-200';
+                }
+                
+                // 移除所有颜色类
+                heatElem.className = 'p-5 rounded-xl text-center';
+                // 添加新的颜色类
+                heatElem.classList.add(...colorClass.split(' '));
+            }
+
+            // 3. 班级统计
+            const classStats = {};
+            
+            // 初始化班级数据
+            studentRecords.forEach(record => {
+                const className = record.studentInfo.className;
+                if (!classStats[className]) {
+                    classStats[className] = {
+                        totalStudents: new Set(),
+                        fullCorrect: 0,
+                        errorTypes: {}
+                    };
+                }
+                classStats[className].totalStudents.add(record.studentInfo.name);
+                
+                if (record.result.allCorrect) {
+                    classStats[className].fullCorrect++;
+                }
+            });
+            
+            // 统计班级错误类型
+            studentRecords.forEach(record => {
+                const className = record.studentInfo.className;
+                record.result.questionResults.forEach(q => {
+                    if (!q.correct) {
+                        classStats[className].errorTypes[q.correctType] = (classStats[className].errorTypes[q.correctType] || 0) + 1;
+                    }
+                });
+            });
+
+            // 更新班级统计表格
+            const classErrorStats = document.getElementById('classErrorStats');
+            classErrorStats.innerHTML = '';
+            
+            Object.entries(classStats).forEach(([className, stats]) => {
+                // 找出错误率最高的类型
+                let maxErrorType = '';
+                let maxCount = 0;
+                Object.entries(stats.errorTypes).forEach(([type, count]) => {
+                    if (count > maxCount) {
+                        maxCount = count;
+                        maxErrorType = type;
+                    }
+                });
+
+                const row = document.createElement('tr');
+                row.className = 'bg-white hover:bg-light/50 transition-colors';
+                row.innerHTML = `
+                    <td class="px-6 py-4 border-b">${className}</td>
+                    <td class="px-6 py-4 border-b">${stats.totalStudents.size}</td>
+                    <td class="px-6 py-4 border-b">${stats.fullCorrect}</td>
+                    <td class="px-6 py-4 border-b">${maxErrorType ? getPlantTypeName(maxErrorType) : '无'}</td>
+                `;
+                classErrorStats.appendChild(row);
+            });
+
+            // 4. 错题分析报告
+            const errorRateList = document.getElementById('errorRateList');
+            errorRateList.innerHTML = '';
+
+            // 各类型错误率
+            for (const type in typeStats) {
+                const stats = typeStats[type];
+                const errorCount = stats.total - stats.correct;
+                const errorRate = stats.total === 0 ? 0 : Math.round((errorCount / stats.total) * 100);
+                const li = document.createElement('li');
+                li.textContent = `${getPlantTypeName(type)}：${errorRate}%（${errorCount}/${stats.total}次错误）`;
+                errorRateList.appendChild(li);
+            }
+
+            // 汇总所有学生的错误模式
+            const allErrorPatterns = [];
+            studentRecords.forEach(record => {
+                if (record.result.errorPatterns && record.result.errorPatterns.length > 0) {
+                    allErrorPatterns.push(...record.result.errorPatterns);
+                }
+            });
+
+            let mainErrorReason = '暂无明显集中错误';
+            if (allErrorPatterns.length > 0) {
+                const reasonCount = {};
+                allErrorPatterns.forEach(reason => {
+                    reasonCount[reason] = (reasonCount[reason] || 0) + 1;
+                });
+                const maxReason = Object.entries(reasonCount).sort((a, b) => b[1] - a[1])[0];
+                mainErrorReason = `“${maxReason[0]}”（出现${maxReason[1]}次，占${Math.round((maxReason[1]/allErrorPatterns.length)*100)}%）`;
+            }
+
+            // 找出错误率最高的类型
+            let maxErrorType = 'bothEnds';
+            let maxErrorRate = 0;
+            for (const type in typeStats) {
+                const errorRate = typeStats[type].total === 0 ? 0 : (typeStats[type].total - typeStats[type].correct) / typeStats[type].total;
+                if (errorRate > maxErrorRate) {
+                    maxErrorRate = errorRate;
+                    maxErrorType = type;
+                }
+            }
+
+            // 更新报告
+            document.getElementById('errorReport').innerHTML = `
+                <p class="mb-3">1. 各类型题目错误率统计：</p>
+                <ul id="errorRateList" class="list-disc ml-6 mb-6 space-y-1">
+                    ${Array.from(errorRateList.children).map(li => li.outerHTML).join('')}
+                </ul>
+                <p class="mb-3">2. 主要错误原因：${mainErrorReason}</p>
+                <p class="mb-3">3. 教学建议：重点强化<strong>${getPlantTypeName(maxErrorType)}</strong>类型的教学，通过实物演示或画图方式帮助学生理解不同类型的区别，针对${mainErrorReason}设计专项对比练习。</p>
+                <p class="text-sm text-neutral">数据更新时间：${new Date().toLocaleString()}</p>
+            `;
+        }
+
+        // 全屏切换功能
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    showNotification(`全屏切换错误: ${err.message}`, 'error');
+                });
+                document.getElementById('fullscreenBtn').innerHTML = '<i class="fa fa-compress"></i>';
+                showNotification('已进入全屏模式', 'info');
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                    document.getElementById('fullscreenBtn').innerHTML = '<i class="fa fa-expand"></i>';
+                    showNotification('已退出全屏模式', 'info');
+                }
+            }
+        }
+
+        // 更新角色按钮样式
+        function updateRoleBtnStyles(activeRole) {
+            if (activeRole === 'student') {
+                document.getElementById('studentBtn').classList.add('bg-primary', 'text-white');
+                document.getElementById('studentBtn').classList.remove('bg-white', 'text-dark');
+                document.getElementById('teacherBtn').classList.add('bg-white', 'text-dark');
+                document.getElementById('teacherBtn').classList.remove('bg-primary', 'text-white');
+            } else {
+                document.getElementById('teacherBtn').classList.add('bg-primary', 'text-white');
+                document.getElementById('teacherBtn').classList.remove('bg-white', 'text-dark');
+                document.getElementById('studentBtn').classList.add('bg-white', 'text-dark');
+                document.getElementById('studentBtn').classList.remove('bg-primary', 'text-white');
+            }
+        }
+
+        // 生成题目表单
+        function generateQuestionForms() {
+            const template = document.getElementById('questionFormTemplate').innerHTML;
+            document.querySelectorAll('.question-form').forEach(form => {
+                form.innerHTML = template;
+            });
+        }
+
+        // 显示通知
+        function showNotification(message, type = 'info') {
+            // 创建通知元素
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg text-white z-50 transition-all duration-300 opacity-0`;
+            
+            // 设置通知类型样式
+            switch (type) {
+                case 'success':
+                    notification.classList.add('bg-green-500');
+                    notification.innerHTML = `<i class="fa fa-check-circle mr-2"></i>${message}`;
+                    break;
+                case 'error':
+                    notification.classList.add('bg-red-500');
+                    notification.innerHTML = `<i class="fa fa-times-circle mr-2"></i>${message}`;
+                    break;
+                case 'info':
+                default:
+                    notification.classList.add('bg-blue-500');
+                    notification.innerHTML = `<i class="fa fa-info-circle mr-2"></i>${message}`;
+                    break;
+            }
+            
+            // 添加到页面
+            document.body.appendChild(notification);
+            
+            // 显示动画
+            setTimeout(() => {
+                notification.classList.remove('opacity-0');
+                notification.classList.add('opacity-100');
+            }, 10);
+            
+            // 3秒后隐藏
+            setTimeout(() => {
+                notification.classList.remove('opacity-100');
+                notification.classList.add('opacity-0');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+    </script>
 </body>
 </html>
