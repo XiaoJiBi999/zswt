@@ -310,15 +310,14 @@
                 // 全屏切换功能
                 document.getElementById('fullscreenBtn').addEventListener('click', toggleFullScreen);
                 
-                // 角色切换功能
+// 修复角色按钮的事件监听
                 document.getElementById('studentBtn').addEventListener('click', () => {
                     switchToRole('student');
                 });
-                
+
                 document.getElementById('teacherBtn').addEventListener('click', () => {
                     switchToRole('teacher');
                 });
-                
                 // 开始答题按钮
                 document.getElementById('startBtn').addEventListener('click', startQuiz);
                 
@@ -473,15 +472,6 @@
         }
         updateRoleBtnStyles(role);
     }
-
-// 修复角色按钮的事件监听
-    document.getElementById('studentBtn').addEventListener('click', () => {
-        switchToRole('student');
-    });
-
-    document.getElementById('teacherBtn').addEventListener('click', () => {
-        switchToRole('teacher');
-    });
             // 更新角色按钮样式
             function updateRoleBtnStyles(activeRole) {
                 if (activeRole === 'student') {
