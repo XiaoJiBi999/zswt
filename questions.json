@@ -1,0 +1,91 @@
+{
+  "planting": [
+    {
+      "id": 1,
+      "type": "bothEnds",
+      "question": "一条30米长的小路，每隔5米栽一棵树（两端都栽），共需栽多少棵树？",
+      "correctLength": 30,
+      "correctInterval": 5,
+      "correctCount": 7
+    },
+    {
+      "id": 2,
+      "type": "oneEnd",
+      "question": "一条35米长的小路，绿化队要在小路一旁栽一排树，每隔7米栽一棵树，一端靠墙。一共要栽多少棵树？",
+      "correctLength": 35,
+      "correctInterval": 7,
+      "correctCount": 5
+    },
+    {
+      "id": 3,
+      "type": "noEnd",
+      "question": "在一条40米长的走廊两侧摆花盆，从起点到终点每隔2米摆一盆，两端都不摆。一共需要多少盆花？",
+      "correctLength": 40,
+      "correctInterval": 2,
+      "correctCount": 38
+    },
+    {
+      "id": 4,
+      "type": "circle",
+      "question": "一个圆形池塘的周长是60米，沿池塘周围每隔6米栽一棵柳树。一共要栽多少棵柳树？",
+      "correctLength": 60,
+      "correctInterval": 6,
+      "correctCount": 10
+    }
+    // 继续添加更多植树问题，建议达到50题左右
+  ],
+  "calculation": [
+    {
+      "id": 101,
+      "question": "计算：125 × 88 + 360 ÷ 12",
+      "correctAnswer": 11030,
+      "hint": "可以使用乘法分配律简化计算"
+    },
+    {
+      "id": 102,
+      "question": "计算：99 × 38 + 38",
+      "correctAnswer": 3800,
+      "hint": "可以使用乘法分配律的逆运算"
+    },
+    {
+      "id": 103,
+      "question": "计算：36 × 101 - 36",
+      "correctAnswer": 3600,
+      "hint": "注意观察数字特点，使用简便方法"
+    },
+    {
+      "id": 104,
+      "question": "计算：4.6 × 7.8 + 2.2 × 4.6",
+      "correctAnswer": 46,
+      "hint": "提取公因式进行简便计算"
+    }
+    // 继续添加更多计算题，建议达到70题左右
+  ],
+  "problemSolving": [
+    {
+      "id": 201,
+      "question": "小明买了3支钢笔和5本笔记本，共花了48元。已知每支钢笔8元，每本笔记本多少元？",
+      "correctAnswer": 4.8,
+      "unit": "元"
+    },
+    {
+      "id": 202,
+      "question": "学校图书馆买来一批新书，其中故事书有240本，是科技书的3倍，科技书有多少本？",
+      "correctAnswer": 80,
+      "unit": "本"
+    },
+    {
+      "id": 203,
+      "question": "一辆汽车3小时行驶了240千米，照这样的速度，5小时能行驶多少千米？",
+      "correctAnswer": 400,
+      "unit": "千米"
+    },
+    {
+      "id": 204,
+      "question": "一个长方形的周长是48厘米，长是16厘米，它的宽是多少厘米？",
+      "correctAnswer": 8,
+      "unit": "厘米"
+    }
+    // 继续添加更多解决问题，建议达到80题左右
+  ]
+}
